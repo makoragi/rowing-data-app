@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/rowing-data-app/static/css/main.e6c13ad2.css",
+    "main.js": "/rowing-data-app/static/js/main.ce62fa2d.js",
+    "static/js/453.d3eb2dd5.chunk.js": "/rowing-data-app/static/js/453.d3eb2dd5.chunk.js",
+    "index.html": "/rowing-data-app/index.html",
+    "main.e6c13ad2.css.map": "/rowing-data-app/static/css/main.e6c13ad2.css.map",
+    "main.ce62fa2d.js.map": "/rowing-data-app/static/js/main.ce62fa2d.js.map",
+    "453.d3eb2dd5.chunk.js.map": "/rowing-data-app/static/js/453.d3eb2dd5.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.ce62fa2d.js"
+  ]
+}
