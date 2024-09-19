@@ -38,19 +38,26 @@ const RowingDataVisualization = () => {
     const timeIndex = headers.indexOf('Elapsed Time');
     const speedIndex = headers.indexOf('Speed (GPS)');
 
-    return lines.slice(dataStartIndex + 1).map(line => {
+    return lines.slice(dataStartIndex + 1).map((line, index) => {
       const values = line.split(',');
       return {
-        stroke: parseInt(values[intervalIndex]),
+        stroke: index + 1,
         distance: parseFloat(values[distanceIndex]),
         elapsedTime: values[timeIndex],
         speed: parseFloat(values[speedIndex])
       };
-    }).filter(item => !isNaN(item.stroke) && !isNaN(item.distance) && !isNaN(item.speed));
+    }).filter(item => !isNaN(item.distance) && !isNaN(item.speed));
   };
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.value);
+  };
+
+  // X軸の目盛りをカスタマイズする関数
+  const customXAxisTicks = (value) => {
+    if (value % 10 === 0) return value;
+    if (value % 5 === 0) return '';
+    return undefined;
   };
 
   return (
@@ -78,6 +85,8 @@ const RowingDataVisualization = () => {
               dataKey="stroke" 
               label={{ value: 'Stroke', position: 'insideBottom', offset: -5 }}
               tick={{fontSize: 12}}
+              ticks={[...Array(Math.ceil(data.length / 5) + 1)].map((_, i) => i * 5)}
+              tickFormatter={customXAxisTicks}
             />
             <YAxis 
               yAxisId="left" 
