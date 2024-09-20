@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const RowingDataVisualization = () => {
@@ -28,7 +28,7 @@ const RowingDataVisualization = () => {
     }
   }, [selectedFile]);
 
-  const fetchData = async (fileName) => {
+  const fetchData = useCallback(async (fileName) => {
     try {
       const response = await fetch(`${process.env.PUBLIC_URL}/${fileName}`);
       const text = await response.text();
@@ -37,8 +37,8 @@ const RowingDataVisualization = () => {
     } catch (error) {
       console.error('Error fetching or parsing CSV:', error);
     }
-  };
-
+  }, []);
+  
   const parseCSV = (csvText) => {
     const lines = csvText.split('\n');
     
@@ -137,18 +137,18 @@ const RowingDataVisualization = () => {
     return (
       <div className="mb-4">
         <h3 className="text-lg font-semibold mb-2">Session Summary</h3>
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse border-2 border-gray-500">
           <thead>
             <tr>
               {rows.map(row => (
-                <th key={row.key} className="bg-gray-200 border border-gray-300 px-3 py-2 text-left">{row.label}</th>
+                <th key={row.key} className="bg-gray-200 border-2 border-gray-500 px-4 py-2 text-left">{row.label}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             <tr>
               {rows.map(row => (
-                <td key={row.key} className="border border-gray-300 px-3 py-2">{summary[row.key] || '-'}</td>
+                <td key={row.key} className="border-2 border-gray-500 px-4 py-2">{summary[row.key] || '-'}</td>
               ))}
             </tr>
           </tbody>
@@ -167,7 +167,7 @@ const RowingDataVisualization = () => {
         <select 
           id="file-select"
           value={selectedFile} 
-          onChange={(e) => setSelectedFile(e.target.value)}
+          onChange={handleFileChange}
           className="border rounded p-1"
         >
           <option value="">Select a file</option>
@@ -181,7 +181,7 @@ const RowingDataVisualization = () => {
         <select 
           id="graph-select"
           value={selectedGraph} 
-          onChange={(e) => setSelectedGraph(e.target.value)}
+          onChange={handleGraphChange}
           className="border rounded p-1"
         >
           {graphOptions.map(option => (
