@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { format } from 'date-fns';
@@ -18,7 +18,22 @@ const CalendarSelector = ({ availableFiles, onFileSelect, selectedFile }) => {
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    const dateString = format(date, 'yyyy-MM-dd');
+    const filesForDate = filesByDate[dateString] || [];
+    if (filesForDate.length > 0) {
+      onFileSelect(filesForDate[0]); // 選択した日付の最初のファイルを自動的に選択
+    }
   };
+
+  useEffect(() => {
+    // コンポーネントがマウントされたとき、または availableFiles が変更されたときに
+    // 現在の日付のファイルを自動的に選択する
+    const currentDateString = format(selectedDate, 'yyyy-MM-dd');
+    const filesForCurrentDate = filesByDate[currentDateString] || [];
+    if (filesForCurrentDate.length > 0 && !selectedFile) {
+      onFileSelect(filesForCurrentDate[0]);
+    }
+  }, [availableFiles, filesByDate, selectedDate, selectedFile, onFileSelect]);
 
   const tileClassName = ({ date, view }) => {
     if (view === 'month') {
