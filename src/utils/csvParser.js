@@ -1,6 +1,13 @@
-// src/utils/csvParser.js
 export const parseCSV = (csvText) => {
   const lines = csvText.split('\n');
+
+  // Parse Start Time
+  const startTimeIndex = lines.findIndex(line => line.trim().startsWith('Start Time:'));
+  let startTime = null;
+  if (startTimeIndex !== -1) {
+    startTime = lines[startTimeIndex].split(',')[1].trim();
+    // 日付文字列をそのまま保持し、後でコンポーネント側で処理します
+  }
   
   // Parse Session Summary
   const sessionSummaryIndex = lines.findIndex(line => line.trim() === 'Session Summary:');
@@ -44,5 +51,5 @@ export const parseCSV = (csvText) => {
     };
   }).filter(item => item.stroke !== 0 && item.distance !== 0 && item.speed !== 0);
 
-  return { parsedData, summary };
+  return { parsedData, summary, startTime };
 };

@@ -1,4 +1,3 @@
-// src/components/RowingDataVisualization.js
 import React, { useState, useEffect, useCallback } from 'react';
 import { fetchAvailableFiles, fetchCSVData } from '../utils/dataFetching';
 import { parseCSV } from '../utils/csvParser';
@@ -6,6 +5,7 @@ import FileSelector from './FileSelector';
 import GraphSelector from './GraphSelector';
 import DataChart from './DataChart';
 import SessionSummary from './SessionSummary';
+import SessionInfo from './SessionInfo';
 
 const RowingDataVisualization = () => {
   const [data, setData] = useState([]);
@@ -13,6 +13,7 @@ const RowingDataVisualization = () => {
   const [availableFiles, setAvailableFiles] = useState([]);
   const [selectedGraph, setSelectedGraph] = useState('distance-speed');
   const [sessionSummary, setSessionSummary] = useState(null);
+  const [startTime, setStartTime] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -31,9 +32,10 @@ const RowingDataVisualization = () => {
     setError(null);
     try {
       const csvText = await fetchCSVData(fileName);
-      const { parsedData, summary } = parseCSV(csvText);
+      const { parsedData, summary, startTime } = parseCSV(csvText);
       setData(parsedData);
       setSessionSummary(summary);
+      setStartTime(startTime);
     } catch (error) {
       console.error('Error fetching or parsing CSV:', error);
       setError('Failed to load or parse the CSV file. Please try again.');
@@ -67,18 +69,18 @@ const RowingDataVisualization = () => {
           Loading...
         </div>
       ) : data.length > 0 ? (
-        <div className="chart-container">
-          <DataChart data={data} selectedGraph={selectedGraph} />
-        </div>
+        <>
+          <div className="chart-container">
+            <DataChart data={data} selectedGraph={selectedGraph} />
+          </div>
+          <SessionInfo startTime={startTime} summary={sessionSummary} />
+        </>
       ) : (
         <p className="no-data-message">Please select a file to visualize data.</p>
       )}
-
-      <div className="session-summary">
-        <SessionSummary summary={sessionSummary} />
-      </div>
     </div>
   );
+
 };
 
 export default RowingDataVisualization;

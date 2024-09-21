@@ -100,3 +100,22 @@ th {
     padding: 1rem;
   }
 }
+
+.session-info {
+  background-color: #f0f4f8;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.session-info h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #2c5282;
+}
+
+.session-info p {
+  margin: 0.25rem 0;
+  color: #4a5568;
+}
