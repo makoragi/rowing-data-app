@@ -1,11 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 const CalendarSelector = ({ availableFiles, onFileSelect, selectedFile }) => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-
   const filesByDate = useMemo(() => {
     const filesMap = {};
     availableFiles.forEach(file => {
@@ -16,6 +14,24 @@ const CalendarSelector = ({ availableFiles, onFileSelect, selectedFile }) => {
     return filesMap;
   }, [availableFiles]);
 
+  const latestDateWithData = useMemo(() => {
+    const dates = Object.keys(filesByDate).sort((a, b) => b.localeCompare(a));
+    return dates.length > 0 ? parseISO(dates[0]) : new Date();
+  }, [filesByDate]);
+
+  const [selectedDate, setSelectedDate] = useState(latestDateWithData);
+
+  useEffect(() => {
+    // コンポーネントがマウントされたとき、または availableFiles が変更されたときに
+    // 最新の日付のファイルを自動的に選択する
+    const dateString = format(latestDateWithData, 'yyyy-MM-dd');
+    const filesForDate = filesByDate[dateString] || [];
+    if (filesForDate.length > 0 && !selectedFile) {
+      onFileSelect(filesForDate[0]);
+    }
+    setSelectedDate(latestDateWithData);
+  }, [availableFiles, filesByDate, latestDateWithData, selectedFile, onFileSelect]);
+
   const handleDateChange = (date) => {
     setSelectedDate(date);
     const dateString = format(date, 'yyyy-MM-dd');
@@ -24,16 +40,6 @@ const CalendarSelector = ({ availableFiles, onFileSelect, selectedFile }) => {
       onFileSelect(filesForDate[0]); // 選択した日付の最初のファイルを自動的に選択
     }
   };
-
-  useEffect(() => {
-    // コンポーネントがマウントされたとき、または availableFiles が変更されたときに
-    // 現在の日付のファイルを自動的に選択する
-    const currentDateString = format(selectedDate, 'yyyy-MM-dd');
-    const filesForCurrentDate = filesByDate[currentDateString] || [];
-    if (filesForCurrentDate.length > 0 && !selectedFile) {
-      onFileSelect(filesForCurrentDate[0]);
-    }
-  }, [availableFiles, filesByDate, selectedDate, selectedFile, onFileSelect]);
 
   const tileClassName = ({ date, view }) => {
     if (view === 'month') {
