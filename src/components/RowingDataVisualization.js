@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { fetchAvailableFiles, fetchCSVData } from '../utils/dataFetching';
 import { parseCSV } from '../utils/csvParser';
 import CalendarSelector from './CalendarSelector';
+import FileSelector from './FileSelector';
 import GraphSelector from './GraphSelector';
 import DataChart from './DataChart';
 import SessionInfo from './SessionInfo';
@@ -15,6 +16,7 @@ const RowingDataVisualization = () => {
   const [startTime, setStartTime] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [useCalendar, setUseCalendar] = useState(true);
 
   useEffect(() => {
     fetchAvailableFiles(setAvailableFiles, setError);
@@ -43,14 +45,31 @@ const RowingDataVisualization = () => {
     }
   }, []);
 
+  const toggleSelector = () => {
+    setUseCalendar(!useCalendar);
+  };
+
   return (
     <div className="rowing-data-container">
+      <div className="selector-toggle">
+        <button onClick={toggleSelector}>
+          {useCalendar ? 'リスト表示に切り替え' : 'カレンダー表示に切り替え'}
+        </button>
+      </div>
       <div className="selector-container">
-        <CalendarSelector
-          availableFiles={availableFiles}
-          onFileSelect={setSelectedFile}
-          selectedFile={selectedFile}
-        />
+        {useCalendar ? (
+          <CalendarSelector
+            availableFiles={availableFiles}
+            onFileSelect={setSelectedFile}
+            selectedFile={selectedFile}
+          />
+        ) : (
+          <FileSelector
+            availableFiles={availableFiles}
+            onFileSelect={setSelectedFile}
+            selectedFile={selectedFile}
+          />
+        )}
         <GraphSelector
           selectedGraph={selectedGraph}
           onGraphChange={setSelectedGraph}
