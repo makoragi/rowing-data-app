@@ -1,4 +1,5 @@
 // src/utils/dataFetching.js
+
 export const fetchAvailableFiles = async (setAvailableFiles, setError) => {
   try {
     const response = await fetch(`${process.env.PUBLIC_URL}/available_files.json`);
@@ -19,7 +20,7 @@ export const fetchAvailableFiles = async (setAvailableFiles, setError) => {
 };
 
 export const fetchCSVData = async (fileName) => {
-  const response = await fetch(`${process.env.PUBLIC_URL}/${fileName}`);
+  const response = await fetch(`${process.env.PUBLIC_URL}/data/${fileName}`);
   if (!response.ok) {
     throw new Error('Failed to fetch CSV data');
   }

@@ -4,7 +4,6 @@ import { parseCSV } from '../utils/csvParser';
 import FileSelector from './FileSelector';
 import GraphSelector from './GraphSelector';
 import DataChart from './DataChart';
-import SessionSummary from './SessionSummary';
 import SessionInfo from './SessionInfo';
 
 const RowingDataVisualization = () => {
