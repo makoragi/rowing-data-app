@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { fetchAvailableFiles, fetchCSVData } from '../utils/dataFetching';
 import { parseCSV } from '../utils/csvParser';
-import FileSelector from './FileSelector';
+import CalendarSelector from './CalendarSelector';
 import GraphSelector from './GraphSelector';
 import DataChart from './DataChart';
 import SessionInfo from './SessionInfo';
@@ -46,10 +46,10 @@ const RowingDataVisualization = () => {
   return (
     <div className="rowing-data-container">
       <div className="selector-container">
-        <FileSelector
-          selectedFile={selectedFile}
+        <CalendarSelector
           availableFiles={availableFiles}
-          onFileChange={setSelectedFile}
+          onFileSelect={setSelectedFile}
+          selectedFile={selectedFile}
         />
         <GraphSelector
           selectedGraph={selectedGraph}
@@ -79,7 +79,6 @@ const RowingDataVisualization = () => {
       )}
     </div>
   );
-
 };
 
 export default RowingDataVisualization;

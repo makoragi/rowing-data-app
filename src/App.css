@@ -119,3 +119,127 @@ th {
   margin: 0.25rem 0;
   color: #4a5568;
 }
+
+/* 既存のスタイルは省略 */
+
+.calendar-selector {
+  display: flex;
+  gap: 1rem;
+}
+
+.custom-calendar {
+  width: 350px;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  padding: 1rem;
+  background-color: #fff;
+}
+
+.file-indicator {
+  height: 8px;
+  width: 8px;
+  background-color: #4299e1;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.files-list {
+  flex: 1;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  padding: 1rem;
+  background-color: #f8fafc;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.files-list h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.files-list ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.files-list li {
+  margin-bottom: 0.25rem;
+}
+
+.files-list button {
+  background-color: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  text-align: left;
+}
+
+.files-list button:hover {
+  background-color: #edf2f7;
+}
+
+.files-list button.selected {
+  background-color: #4299e1;
+  color: #fff;
+  border-color: #4299e1;
+}
+
+@media (max-width: 768px) {
+  .calendar-selector {
+    flex-direction: column;
+  }
+
+  .custom-calendar {
+    width: 100%;
+  }
+}
+
+/* 既存のスタイルは省略 */
+
+.custom-calendar .has-data {
+  background-color: #e6f3ff;
+  font-weight: bold;
+}
+
+.custom-calendar .has-data:hover {
+  background-color: #cce5ff;
+}
+
+.custom-calendar .file-count {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  background-color: #4299e1;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.react-calendar__tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.react-calendar__month-view__days__day {
+  padding: 1em 0.5em;
+}
