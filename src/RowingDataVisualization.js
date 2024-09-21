@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const RowingDataVisualization = () => {
@@ -7,19 +7,38 @@ const RowingDataVisualization = () => {
   const [availableFiles, setAvailableFiles] = useState([]);
   const [selectedGraph, setSelectedGraph] = useState('distance-speed');
   const [sessionSummary, setSessionSummary] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const graphOptions = [
+  const graphOptions = useMemo(() => [
     { value: 'distance-speed', label: 'Distance vs Speed', y1: 'distance', y2: 'speed', unit1: 'm', unit2: 'm/s' },
     { value: 'distance-strokeRate', label: 'Distance vs Stroke Rate', y1: 'distance', y2: 'strokeRate', unit1: 'm', unit2: 'SPM' },
     { value: 'speed-strokeRate', label: 'Speed vs Stroke Rate', y1: 'speed', y2: 'strokeRate', unit1: 'm/s', unit2: 'SPM' },
     { value: 'distance-elapsedTime', label: 'Distance vs Elapsed Time', y1: 'distance', y2: 'elapsedTime', unit1: 'm', unit2: '' },
     { value: 'speed-elapsedTime', label: 'Speed vs Elapsed Time', y1: 'speed', y2: 'elapsedTime', unit1: 'm/s', unit2: '' },
-  ];
+  ], []);
 
   useEffect(() => {
-    // 利用可能なCSVファイルのリストをここで設定
-    // 実際の環境では、このリストをサーバーから動的に取得することもできます
-    setAvailableFiles(['20240727_0817.csv', '20240727_1703.csv', '20240728_0803.csv']);
+    const fetchAvailableFiles = async () => {
+      try {
+        const response = await fetch(`${process.env.PUBLIC_URL}/available_files.json`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('Fetched data:', data); // デバッグ用ログ
+        if (Array.isArray(data.files)) {
+          setAvailableFiles(data.files);
+        } else {
+          console.error('Unexpected data structure:', data);
+          setError('Unexpected data structure in available_files.json');
+        }
+      } catch (error) {
+        console.error('Error fetching available files:', error);
+        setError(`Failed to load available files: ${error.message}`);
+      }
+    };
+    fetchAvailableFiles();
   }, []);
 
   useEffect(() => {
@@ -29,17 +48,25 @@ const RowingDataVisualization = () => {
   }, [selectedFile]);
 
   const fetchData = useCallback(async (fileName) => {
+    setLoading(true);
+    setError(null);
     try {
       const response = await fetch(`${process.env.PUBLIC_URL}/${fileName}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch CSV data');
+      }
       const text = await response.text();
       const parsedData = parseCSV(text);
       setData(parsedData);
     } catch (error) {
       console.error('Error fetching or parsing CSV:', error);
+      setError('Failed to load or parse the CSV file. Please try again.');
+    } finally {
+      setLoading(false);
     }
   }, []);
   
-  const parseCSV = (csvText) => {
+  const parseCSV = useCallback((csvText) => {
     const lines = csvText.split('\n');
     
     // Parse Session Summary
@@ -62,8 +89,7 @@ const RowingDataVisualization = () => {
     // Parse Per-Stroke Data
     const dataStartIndex = lines.findIndex(line => line.trim() === 'Per-Stroke Data:');
     if (dataStartIndex === -1) {
-      console.error('Could not find "Per-Stroke Data:" in the CSV file');
-      return [];
+      throw new Error('Could not find "Per-Stroke Data:" in the CSV file');
     }
     const headers = lines[dataStartIndex + 2].split(',');
     const columnIndexes = {
@@ -84,7 +110,7 @@ const RowingDataVisualization = () => {
         elapsedTime: values[columnIndexes.elapsedTime] ? values[columnIndexes.elapsedTime].trim() : ''
       };
     }).filter(item => item.stroke !== 0 && item.distance !== 0 && item.speed !== 0);
-  };
+  }, []);
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.value);
@@ -94,24 +120,24 @@ const RowingDataVisualization = () => {
     setSelectedGraph(event.target.value);
   };
 
-  const customXAxisTicks = (value) => {
+  const customXAxisTicks = useCallback((value) => {
     if (value % 10 === 0) return value;
     if (value % 5 === 0) return '';
     return undefined;
-  };
+  }, []);
 
-  const getCurrentGraphOption = () => {
+  const getCurrentGraphOption = useCallback(() => {
     return graphOptions.find(option => option.value === selectedGraph);
-  };
+  }, [selectedGraph, graphOptions]);
 
-  const formatYAxis = (value, dataKey) => {
+  const formatYAxis = useCallback((value, dataKey) => {
     if (dataKey === 'elapsedTime') {
       return value;
     }
     return typeof value === 'number' ? value.toFixed(2) : value;
-  };
+  }, []);
 
-  const formatTooltip = (value, name, props) => {
+  const formatTooltip = useCallback((value, name, props) => {
     if (name === 'elapsedTime') {
       return value;
     }
@@ -119,9 +145,9 @@ const RowingDataVisualization = () => {
       return value.toFixed(2);
     }
     return value;
-  };
+  }, []);
 
-  const renderSummaryTable = (summary) => {
+  const renderSummaryTable = useCallback((summary) => {
     if (!summary) return null;
     
     const rows = [
@@ -155,20 +181,20 @@ const RowingDataVisualization = () => {
         </table>
       </div>
     );
-  };
+  }, []);
 
   return (
     <div className="p-4 bg-white rounded-lg shadow">
       <h2 className="text-xl font-bold mb-4">Rowing Data Visualization</h2>
       
       {/* File and Graph Selection */}
-      <div className="mb-4">
+      <div className="mb-4 flex items-center">
         <label htmlFor="file-select" className="mr-2">Select CSV file:</label>
         <select 
           id="file-select"
           value={selectedFile} 
           onChange={handleFileChange}
-          className="border rounded p-1"
+          className="border rounded p-1 flex-grow"
         >
           <option value="">Select a file</option>
           {availableFiles.map(file => (
@@ -176,23 +202,34 @@ const RowingDataVisualization = () => {
           ))}
         </select>
       </div>
-      <div className="mb-4">
+      <div className="mb-4 flex items-center">
         <label htmlFor="graph-select" className="mr-2">Select Graph:</label>
         <select 
           id="graph-select"
           value={selectedGraph} 
           onChange={handleGraphChange}
-          className="border rounded p-1"
+          className="border rounded p-1 flex-grow"
         >
           {graphOptions.map(option => (
             <option key={option.value} value={option.value}>{option.label}</option>
           ))}
         </select>
       </div>
-      {data.length > 0 ? (
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
+
+      {error && (
+        <div className="mb-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
+        </div>
+      )}
+
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      ) : data.length > 0 ? (
+        <ResponsiveContainer width="100%" height={400}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
               dataKey="stroke" 
               label={{ value: 'Total Strokes', position: 'insideBottom', offset: -5 }}
@@ -214,13 +251,13 @@ const RowingDataVisualization = () => {
               tickFormatter={(value) => formatYAxis(value, getCurrentGraphOption().y2)}
             />
             <Tooltip formatter={formatTooltip} />
-              <Legend />
+            <Legend />
             <Line yAxisId="left" type="monotone" dataKey={getCurrentGraphOption().y1} stroke="#8884d8" name={getCurrentGraphOption().y1} dot={false} />
             <Line yAxisId="right" type="monotone" dataKey={getCurrentGraphOption().y2} stroke="#82ca9d" name={getCurrentGraphOption().y2} dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
+          </LineChart>
+        </ResponsiveContainer>
       ) : (
-        <p>Please select a file to visualize data.</p>
+        <p className="text-center text-gray-600">Please select a file to visualize data.</p>
       )}
 
       {/* Session Summary */}
