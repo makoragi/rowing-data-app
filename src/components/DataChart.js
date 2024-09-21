@@ -60,15 +60,16 @@ const DataChart = ({ data, selectedGraph }) => {
   };
 
   return (
-    <div style={{ width: '100%', height: 400 }}>
-      <button onClick={zoomOut}>ズームアウト</button>
-      <ResponsiveContainer>
+    <div className="data-chart-container">
+      <button className="zoom-out-btn" onClick={zoomOut}>ズームアウト</button>
+      <ResponsiveContainer width="100%" height={400}>
         <LineChart
           data={data}
           onMouseDown={(e) => e && setRefAreaLeft(e.activeLabel)}
           onMouseMove={(e) => refAreaLeft && e && setRefAreaRight(e.activeLabel)}
           onMouseUp={zoom}
-        >
+          className="line-chart"
+          >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis 
             dataKey="stroke" 
