@@ -1,4 +1,4 @@
-// src/utils/dataFetching.js
+import { decode } from 'iconv-lite';
 
 export const fetchAvailableFiles = async (setAvailableFiles, setError) => {
   try {
@@ -20,9 +20,19 @@ export const fetchAvailableFiles = async (setAvailableFiles, setError) => {
 };
 
 export const fetchCSVData = async (fileName) => {
-  const response = await fetch(`${process.env.PUBLIC_URL}/data/${fileName}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch CSV data');
+  try {
+    const response = await fetch(`${process.env.PUBLIC_URL}/data/${fileName}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch CSV data: ${response.status} ${response.statusText}`);
+    }
+    
+    const arrayBuffer = await response.arrayBuffer();
+    const shiftJisBuffer = new Uint8Array(arrayBuffer);
+    const decodedText = decode(shiftJisBuffer, 'Shift_JIS');
+    
+    return decodedText;
+  } catch (error) {
+    console.error('Error fetching CSV data:', error);
+    throw error;
   }
-  return await response.text();
 };
