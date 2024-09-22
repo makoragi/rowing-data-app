@@ -182,7 +182,7 @@ const DataChart = ({ data, selectedGraph }) => {
             tickFormatter={(value) => formatYAxis(value, currentOption.y1)}
             tick={{fontSize: isSmallScreen ? 10 : 12}}
             width={isSmallScreen ? 30 : 60}
-            label={isSmallScreen ? null : { value: currentOption.y1, angle: -90, position: 'insideLeft' }}
+            label={isSmallScreen ? null : { value: `${currentOption.y1} (${currentOption.unit1})`, angle: -90, position: 'insideLeft' }}
           />
           <YAxis 
             yAxisId="right" 
@@ -192,7 +192,7 @@ const DataChart = ({ data, selectedGraph }) => {
             tickFormatter={(value) => formatYAxis(value, currentOption.y2)}
             tick={{fontSize: isSmallScreen ? 10 : 12}}
             width={isSmallScreen ? 30 : 60}
-            label={isSmallScreen ? null : { value: currentOption.y2, angle: 90, position: 'insideRight' }}
+            label={isSmallScreen ? null : { value: `${currentOption.y2} (${currentOption.unit2})`, angle: 90, position: 'insideRight' }}
           />
           <Tooltip formatter={formatTooltip} />
           <Legend 
@@ -200,8 +200,8 @@ const DataChart = ({ data, selectedGraph }) => {
             height={36}
             wrapperStyle={{fontSize: isSmallScreen ? 10 : 12}}
           />
-          <Line yAxisId="left" type="monotone" dataKey={currentOption.y1} stroke="#8884d8" name={currentOption.y1} dot={false} />
-          <Line yAxisId="right" type="monotone" dataKey={currentOption.y2} stroke="#82ca9d" name={currentOption.y2} dot={false} />
+          <Line yAxisId="left" type="monotone" dataKey={currentOption.y1} stroke="#8884d8" name={currentOption.y1} dot={false} unit={currentOption.unit1} />
+          <Line yAxisId="right" type="monotone" dataKey={currentOption.y2} stroke="#82ca9d" name={currentOption.y2} dot={false} unit={currentOption.unit2} />
           
           {refAreaLeft && refAreaRight ? (
             <ReferenceArea yAxisId="left" x1={refAreaLeft} x2={refAreaRight} strokeOpacity={0.3} />

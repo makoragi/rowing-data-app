@@ -43,6 +43,7 @@ export const parseCSV = (csvText) => {
     distance: headers.indexOf('Distance (GPS)'),
     speed: headers.indexOf('Speed (GPS)'),
     strokeRate: headers.indexOf('Stroke Rate'),
+    distancePerStroke: headers.indexOf(`Distance/Stroke (GPS)`),
     elapsedTime: headers.indexOf('Elapsed Time')
   };
 
@@ -53,6 +54,7 @@ export const parseCSV = (csvText) => {
       distance: parseFloat(values[columnIndexes.distance]) || 0,
       speed: parseFloat(values[columnIndexes.speed]) || 0,
       strokeRate: parseFloat(values[columnIndexes.strokeRate]) || 0,
+      distancePerStroke: parseFloat(values[columnIndexes.distancePerStroke]) || 0,
       elapsedTime: values[columnIndexes.elapsedTime] ? values[columnIndexes.elapsedTime].trim() : ''
     };
   }).filter(item => item.stroke !== 0 && item.distance !== 0 && item.speed !== 0);
@@ -153,6 +155,7 @@ export const parseUploadedCSV = (csvContent) => {
     distance: headers.indexOf('Distance (GPS)'),
     speed: headers.indexOf('Speed (GPS)'),
     strokeRate: headers.indexOf('Stroke Rate'),
+    distancePerStroke: headers.indexOf(`Distance/Stroke (GPS)`),
     elapsedTime: headers.indexOf('Elapsed Time')
   };
 
@@ -163,6 +166,7 @@ export const parseUploadedCSV = (csvContent) => {
       distance: parseFloat(values[columnIndexes.distance]) || 0,
       speed: parseFloat(values[columnIndexes.speed]) || 0,
       strokeRate: parseFloat(values[columnIndexes.strokeRate]) || 0,
+      distancePerStroke: parseFloat(values[columnIndexes.distancePerStroke]) || 0,
       elapsedTime: values[columnIndexes.elapsedTime] ? values[columnIndexes.elapsedTime].trim() : ''
     };
   }).filter(item => item.stroke !== 0 && item.distance !== 0 && item.speed !== 0);
