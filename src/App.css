@@ -369,3 +369,74 @@ th {
     flex-direction: column;
   }
 }
+
+/* 既存のスタイルに追加または更新 */
+
+.data-chart-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  margin-bottom: 30px; /* セッション情報との間隔を確保 */
+}
+
+.line-chart {
+  font-family: Arial, sans-serif;
+}
+
+.line-chart .recharts-legend-wrapper {
+  padding: 0 10px;
+}
+
+.session-info {
+  margin-top: 30px; /* グラフとの間隔を確保 */
+}
+
+@media (max-width: 600px) {
+  .data-chart-container {
+    padding: 10px;
+    margin-bottom: 20px; /* 小さい画面での間隔を調整 */
+  }
+
+  .zoom-out-btn {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .line-chart .recharts-legend-item-text {
+    font-size: 10px;
+  }
+
+  .session-info {
+    margin-top: 20px; /* 小さい画面での間隔を調整 */
+  }
+}
+
+/* 既存のスタイルに追加または更新 */
+
+.line-chart .recharts-cartesian-axis-tick-value {
+  fill: #4a5568;
+}
+
+@media (max-width: 600px) {
+  .line-chart .recharts-yAxis .recharts-cartesian-axis-tick-value {
+    transform: translateX(-2px);
+  }
+
+  .line-chart .recharts-yAxis.yAxis-right .recharts-cartesian-axis-tick-value {
+    transform: translateX(2px);
+  }
+}
+
+.data-chart-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  margin-bottom: 30px;
+}
+
+@media (max-width: 600px) {
+  .data-chart-container {
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+}

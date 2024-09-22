@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ResponsiveContainer, ReferenceArea, Brush
@@ -13,6 +13,7 @@ const DataChart = ({ data, selectedGraph }) => {
   const [right, setRight] = useState('dataMax');
   const [top, setTop] = useState('dataMax+1');
   const [bottom, setBottom] = useState('dataMin-1');
+  const [chartWidth, setChartWidth] = useState(window.innerWidth);
 
   const getCurrentGraphOption = useCallback(() => {
     return graphOptions.find(option => option.value === selectedGraph);
@@ -59,40 +60,83 @@ const DataChart = ({ data, selectedGraph }) => {
     setBottom('dataMin');
   };
 
+  useEffect(() => {
+    const handleResize = () => setChartWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isSmallScreen = chartWidth < 600;
+
+  const getYAxisProps = (isRight = false) => {
+    const commonProps = {
+      allowDataOverflow: true,
+      tickFormatter: (value) => formatYAxis(value, isRight ? currentOption.y2 : currentOption.y1),
+      tick: { fontSize: isSmallScreen ? 10 : 12 },
+      width: 60,
+    };
+
+    if (isSmallScreen) {
+      return {
+        ...commonProps,
+        tickSize: 8,
+        axisLine: false,
+        tickLine: false,
+        tickMargin: 0,
+        mirror: true,
+      };
+    } else {
+      return {
+        ...commonProps,
+        tickSize: 5,
+        axisLine: true,
+        tickLine: true,
+        tickMargin: 5,
+        mirror: false,
+      };
+    }
+  };
+  
   return (
     <div className="data-chart-container">
       <button className="zoom-out-btn" onClick={zoomOut}>ズームアウト</button>
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="100%" height={isSmallScreen ? 300 : 400}>
         <LineChart
           data={data}
           onMouseDown={(e) => e && setRefAreaLeft(e.activeLabel)}
           onMouseMove={(e) => refAreaLeft && e && setRefAreaRight(e.activeLabel)}
           onMouseUp={zoom}
           className="line-chart"
-          >
+          margin={isSmallScreen ? { top: 20, right: 10, left: 0, bottom: 10 } : { top: 20, right: 30, left: 20, bottom: 10 }}
+        >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis 
             dataKey="stroke" 
             allowDataOverflow={true}
             domain={[left, right]}
             type="number"
+            tick={{fontSize: isSmallScreen ? 10 : 12}}
           />
           <YAxis 
             yAxisId="left"
-            allowDataOverflow={true}
+            {...getYAxisProps()}
             domain={[bottom, top]}
             type="number"
-            tickFormatter={(value) => formatYAxis(value, currentOption.y1)}
+            label={{ value: currentOption.y1, angle: -90, position: 'insideLeft', fontSize: isSmallScreen ? 10 : 12, offset: isSmallScreen ? 0 : -10 }}
           />
           <YAxis 
             yAxisId="right" 
             orientation="right"
-            allowDataOverflow={true}
+            {...getYAxisProps(true)}
             domain={['auto', 'auto']}
-            tickFormatter={(value) => formatYAxis(value, currentOption.y2)}
+            label={{ value: currentOption.y2, angle: 90, position: 'insideRight', fontSize: isSmallScreen ? 10 : 12, offset: isSmallScreen ? 0 : -10 }}
           />
           <Tooltip formatter={formatTooltip} />
-          <Legend />
+          <Legend 
+            verticalAlign={isSmallScreen ? "top" : "bottom"}
+            height={36}
+            wrapperStyle={{fontSize: isSmallScreen ? 10 : 12}}
+          />
           <Line yAxisId="left" type="monotone" dataKey={currentOption.y1} stroke="#8884d8" name={currentOption.y1} dot={false} />
           <Line yAxisId="right" type="monotone" dataKey={currentOption.y2} stroke="#82ca9d" name={currentOption.y2} dot={false} />
           
