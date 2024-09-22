@@ -22,23 +22,19 @@ const CalendarSelector = ({ availableFiles, onFileSelect, selectedFile }) => {
   const [selectedDate, setSelectedDate] = useState(latestDateWithData);
 
   useEffect(() => {
-    // コンポーネントがマウントされたとき、または availableFiles が変更されたときに
-    // 最新の日付のファイルを自動的に選択する
-    const dateString = format(latestDateWithData, 'yyyy-MM-dd');
+    setSelectedDate(latestDateWithData);
+  }, [latestDateWithData]);
+
+  useEffect(() => {
+    const dateString = format(selectedDate, 'yyyy-MM-dd');
     const filesForDate = filesByDate[dateString] || [];
-    if (filesForDate.length > 0 && !selectedFile) {
+    if (filesForDate.length > 0 && (!selectedFile || !filesForDate.includes(selectedFile))) {
       onFileSelect(filesForDate[0]);
     }
-    setSelectedDate(latestDateWithData);
-  }, [availableFiles, filesByDate, latestDateWithData, selectedFile, onFileSelect]);
+  }, [selectedDate, filesByDate, selectedFile, onFileSelect]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    const dateString = format(date, 'yyyy-MM-dd');
-    const filesForDate = filesByDate[dateString] || [];
-    if (filesForDate.length > 0) {
-      onFileSelect(filesForDate[0]); // 選択した日付の最初のファイルを自動的に選択
-    }
   };
 
   const tileClassName = ({ date, view }) => {
