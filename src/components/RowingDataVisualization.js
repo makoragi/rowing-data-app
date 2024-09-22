@@ -22,8 +22,8 @@ const RowingDataVisualization = () => {
     setLoading(true);
     setError(null);
     try {
-      const csvText = await fetchCSVData(fileName);
-      const { parsedData, summary, startTime } = parseCSV(csvText);
+    const csvText = await fetchCSVData(fileName);
+    const { parsedData, summary, startTime } = parseCSV(csvText);
       setData(parsedData);
       setSessionSummary(summary);
       setStartTime(startTime);
@@ -44,12 +44,17 @@ const RowingDataVisualization = () => {
   }, []);
 
   useEffect(() => {
-    if (availableFiles.length > 0) {
+    if (availableFiles.length > 0 && !selectedFile) {
       const latestFile = availableFiles[availableFiles.length - 1];
       setSelectedFile(latestFile);
-      fetchData(latestFile);
     }
-  }, [availableFiles, fetchData]);
+  }, [availableFiles, selectedFile]);
+
+  useEffect(() => {
+    if (selectedFile) {
+      fetchData(selectedFile);
+    }
+  }, [selectedFile, fetchData]);
 
   const toggleSelector = () => {
     setUseCalendar(!useCalendar);
@@ -104,7 +109,6 @@ const RowingDataVisualization = () => {
       ) : (
         <p className="no-data-message">表示するデータがありません。ファイルを選択してください。</p>
       )}
-
     </div>
   );
 };
