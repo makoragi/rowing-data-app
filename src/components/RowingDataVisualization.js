@@ -51,6 +51,7 @@ const RowingDataVisualization = () => {
 
   return (
     <div className="rowing-data-container">
+      <h2 className="wakana-sc-title">WAKANA SC</h2>
       <div className="selector-toggle">
         <button onClick={toggleSelector}>
           {useCalendar ? 'リスト表示に切り替え' : 'カレンダー表示に切り替え'}
