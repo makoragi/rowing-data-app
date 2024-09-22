@@ -1,3 +1,4 @@
+/* 基本スタイル */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f0f2f5;
@@ -11,11 +12,15 @@ body {
   min-height: 100vh;
 }
 
+/* ヘッダースタイル */
 .App-header {
   background-color: #ffffff;
   color: #1a1a1a;
   padding: 1rem 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .App-header h1 {
@@ -23,6 +28,7 @@ body {
   margin: 0;
 }
 
+/* メインコンテンツスタイル */
 main {
   flex-grow: 1;
   padding: 2rem;
@@ -41,16 +47,12 @@ main {
 }
 
 .rowing-data-container {
-  padding-top: 1rem;
+  padding: 1rem;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
-.rowing-data-container {
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-}
-
+/* セレクターとボタンのスタイル */
 .selector-container {
   display: flex;
   gap: 1rem;
@@ -61,7 +63,7 @@ main {
   flex: 1;
 }
 
-select {
+select, .file-select {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #d1d5db;
@@ -69,20 +71,83 @@ select {
   font-size: 1rem;
 }
 
-.chart-container {
-  margin-top: 2rem;
-  height: 400px;
-}
-
-.session-summary {
-  margin-top: 2rem;
-}
-
-.session-summary h3 {
-  font-size: 1.2rem;
+.selector-toggle {
   margin-bottom: 1rem;
 }
 
+.selector-toggle button, .zoom-out-btn, .file-uploader button {
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.selector-toggle button:hover, .zoom-out-btn:hover, .file-uploader button:hover {
+  background-color: #3182ce;
+}
+
+/* チャートとデータ表示のスタイル */
+.chart-container {
+  width: 100%;
+  overflow-x: hidden; /* auto から hidden に変更 */
+  margin-bottom: 2rem;
+}
+
+.data-chart-container {
+  width: 100%;
+  min-width: auto; /* 600px から auto に変更 */
+}
+
+.line-chart {
+  font-family: Arial, sans-serif;
+}
+
+.line-chart .recharts-cartesian-axis-tick-value {
+  font-size: 12px;
+  fill: #4a5568;
+}
+
+.line-chart .recharts-legend-item-text {
+  font-size: 14px;
+  color: #2d3748;
+}
+
+.line-chart .recharts-tooltip-wrapper {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.line-chart .recharts-brush-slide {
+  fill: #4299e1;
+  fill-opacity: 0.3;
+}
+
+.line-chart .recharts-brush-traveller {
+  fill: #4299e1;
+}
+
+/* セッション情報のスタイル */
+.session-info, .session-summary {
+  margin-top: 2rem;
+}
+
+.session-info h3, .session-summary h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #2c5282;
+}
+
+.session-info p {
+  margin: 0.25rem 0;
+  color: #4a5568;
+}
+
+/* テーブルスタイル */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -99,41 +164,7 @@ th {
   font-weight: 600;
 }
 
-@media (max-width: 768px) {
-  .selector-container {
-    flex-direction: column;
-  }
-  
-  main {
-    padding: 1rem;
-  }
-  
-  .rowing-data-container {
-    padding: 1rem;
-  }
-}
-
-.session-info {
-  background-color: #f0f4f8;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-top: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.session-info h3 {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-  color: #2c5282;
-}
-
-.session-info p {
-  margin: 0.25rem 0;
-  color: #4a5568;
-}
-
-/* 既存のスタイルは省略 */
-
+/* カレンダースタイル */
 .calendar-selector {
   display: flex;
   gap: 1rem;
@@ -147,17 +178,43 @@ th {
   background-color: #fff;
 }
 
-.file-indicator {
-  height: 8px;
-  width: 8px;
-  background-color: #4299e1;
-  border-radius: 50%;
-  position: absolute;
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
+.custom-calendar .has-data {
+  background-color: #e6f3ff;
+  font-weight: bold;
 }
 
+.custom-calendar .has-data:hover {
+  background-color: #cce5ff;
+}
+
+.custom-calendar .file-count {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  background-color: #4299e1;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.react-calendar__tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.react-calendar__month-view__days__day {
+  padding: 1em 0.5em;
+}
+
+/* ファイルリストスタイル */
 .files-list {
   flex: 1;
   border: 1px solid #e2e8f0;
@@ -208,253 +265,7 @@ th {
   border-color: #4299e1;
 }
 
-@media (max-width: 768px) {
-  .calendar-selector {
-    flex-direction: column;
-  }
-
-  .custom-calendar {
-    width: 100%;
-  }
-}
-
-/* 既存のスタイルは省略 */
-
-.custom-calendar .has-data {
-  background-color: #e6f3ff;
-  font-weight: bold;
-}
-
-.custom-calendar .has-data:hover {
-  background-color: #cce5ff;
-}
-
-.custom-calendar .file-count {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  background-color: #4299e1;
-  color: white;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.react-calendar__tile {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
-.react-calendar__month-view__days__day {
-  padding: 1em 0.5em;
-}
-
-/* 既存のスタイルは省略 */
-
-.selector-toggle {
-  margin-bottom: 1rem;
-}
-
-.selector-toggle button {
-  padding: 0.5rem 1rem;
-  background-color: #4299e1;
-  color: white;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.selector-toggle button:hover {
-  background-color: #3182ce;
-}
-
-.file-selector {
-  width: 100%;
-}
-
-.file-select {
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.25rem;
-}
-
-@media (max-width: 768px) {
-  .selector-container {
-    flex-direction: column;
-  }
-}
-
-/* 既存のスタイルは省略 */
-
-.data-chart-container {
-  background-color: #f8fafc;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-}
-
-.zoom-out-btn {
-  background-color: #4299e1;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
-  margin-bottom: 10px;
-}
-
-.zoom-out-btn:hover {
-  background-color: #3182ce;
-}
-
-.line-chart {
-  font-family: Arial, sans-serif;
-}
-
-.line-chart .recharts-cartesian-axis-tick-value {
-  font-size: 12px;
-  fill: #4a5568;
-}
-
-.line-chart .recharts-legend-item-text {
-  font-size: 14px;
-  color: #2d3748;
-}
-
-.line-chart .recharts-tooltip-wrapper {
-  background-color: rgba(255, 255, 255, 0.9);
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.line-chart .recharts-brush-slide {
-  fill: #4299e1;
-  fill-opacity: 0.3;
-}
-
-.line-chart .recharts-brush-traveller {
-  fill: #4299e1;
-}
-
-.rowing-data-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.selector-container {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.calendar-selector,
-.file-selector {
-  flex: 1;
-}
-
-.graph-selector select,
-.file-selector select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
-  font-size: 14px;
-  color: #4a5568;
-}
-
-@media (max-width: 768px) {
-  .selector-container {
-    flex-direction: column;
-  }
-}
-
-/* 既存のスタイルに追加または更新 */
-
-.data-chart-container {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-  margin-bottom: 30px; /* セッション情報との間隔を確保 */
-}
-
-.line-chart {
-  font-family: Arial, sans-serif;
-}
-
-.line-chart .recharts-legend-wrapper {
-  padding: 0 10px;
-}
-
-.session-info {
-  margin-top: 30px; /* グラフとの間隔を確保 */
-}
-
-@media (max-width: 600px) {
-  .data-chart-container {
-    padding: 10px;
-    margin-bottom: 20px; /* 小さい画面での間隔を調整 */
-  }
-
-  .zoom-out-btn {
-    font-size: 12px;
-    padding: 6px 12px;
-  }
-
-  .line-chart .recharts-legend-item-text {
-    font-size: 10px;
-  }
-
-  .session-info {
-    margin-top: 20px; /* 小さい画面での間隔を調整 */
-  }
-}
-
-/* 既存のスタイルに追加または更新 */
-
-.line-chart .recharts-cartesian-axis-tick-value {
-  fill: #4a5568;
-}
-
-@media (max-width: 600px) {
-  .line-chart .recharts-yAxis .recharts-cartesian-axis-tick-value {
-    transform: translateX(-2px);
-  }
-
-  .line-chart .recharts-yAxis.yAxis-right .recharts-cartesian-axis-tick-value {
-    transform: translateX(2px);
-  }
-}
-
-.data-chart-container {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-  margin-bottom: 30px;
-}
-
-@media (max-width: 600px) {
-  .data-chart-container {
-    padding: 10px;
-    margin-bottom: 20px;
-  }
-}
-
-/* 既存のスタイルに追加 */
-
+/* ハンバーガーメニュースタイル */
 .hamburger-menu-container {
   position: relative;
 }
@@ -523,32 +334,7 @@ th {
   z-index: 8;
 }
 
-.App-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: #f0f4f8;
-}
-
-.hamburger-menu {
-  display: flex;
-  gap: 1rem;
-}
-
-.hamburger-menu button {
-  background-color: #4CAF50;
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
+/* アップロードデータ可視化スタイル */
 .upload-data-visualization {
   padding: 2rem;
 }
@@ -559,19 +345,59 @@ th {
   color: #666;
 }
 
-.file-uploader {
-  margin-bottom: 1rem;
-}
+/* レスポンシブデザイン */
+@media (max-width: 680px) {
+  .App-header {
+    padding: 0.5rem;
+  }
 
-.file-uploader button {
-  background-color: #4CAF50;
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 4px;
+  main {
+    padding: 0.5rem;
+  }
+
+  .rowing-data-container {
+    padding: 0.5rem;
+  }
+
+  .chart-container {
+    margin-bottom: 1rem;
+  }
+
+  .data-chart-container {
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+
+  .zoom-out-btn {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  .line-chart .recharts-legend-item-text {
+    font-size: 8px;
+  }
+
+  .line-chart .recharts-cartesian-axis-tick-value {
+    font-size: 8px;
+  }
+
+  .line-chart .recharts-yAxis .recharts-cartesian-axis-tick-value {
+    transform: translateX(-1px);
+  }
+
+  .line-chart .recharts-yAxis.yAxis-right .recharts-cartesian-axis-tick-value {
+    transform: translateX(1px);
+  }
+
+  .session-info {
+    margin-top: 10px;
+  }
+
+  .session-info h3 {
+    font-size: 1rem;
+  }
+
+  .session-info p {
+    font-size: 0.8rem;
+  }
 }

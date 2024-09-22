@@ -14,6 +14,18 @@ const DataChart = ({ data, selectedGraph }) => {
   const [top, setTop] = useState('dataMax+1');
   const [bottom, setBottom] = useState('dataMin-1');
   const [chartWidth, setChartWidth] = useState(window.innerWidth);
+  const [chartHeight, setChartHeight] = useState(400);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setChartWidth(width);
+      setChartHeight(width <= 680 ? 300 : 400);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const getCurrentGraphOption = useCallback(() => {
     return graphOptions.find(option => option.value === selectedGraph);
@@ -66,7 +78,7 @@ const DataChart = ({ data, selectedGraph }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const isSmallScreen = chartWidth < 600;
+  const isSmallScreen = chartWidth <= 680;
 
   const getIntegerTicks = (dataMin, dataMax, tickCount = 5, isDistance = false) => {
     let range = dataMax - dataMin;
@@ -145,14 +157,14 @@ const DataChart = ({ data, selectedGraph }) => {
   return (
     <div className="data-chart-container">
       <button className="zoom-out-btn" onClick={zoomOut}>ズームアウト</button>
-      <ResponsiveContainer width="100%" height={isSmallScreen ? 300 : 400}>
+      <ResponsiveContainer width="100%" height={chartHeight}>
         <LineChart
           data={data}
           onMouseDown={(e) => e && setRefAreaLeft(e.activeLabel)}
           onMouseMove={(e) => refAreaLeft && e && setRefAreaRight(e.activeLabel)}
           onMouseUp={zoom}
           className="line-chart"
-          margin={isSmallScreen ? { top: 20, right: 10, left: 0, bottom: 10 } : { top: 20, right: 30, left: 20, bottom: 10 }}
+          margin={isSmallScreen ? { top: 5, right: 10, left: -20, bottom: 20 } : { top: 5, right: 30, left: 20, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis 
@@ -164,14 +176,23 @@ const DataChart = ({ data, selectedGraph }) => {
           />
           <YAxis 
             yAxisId="left"
-            {...getYAxisProps()}
-            label={{ value: currentOption.y1, angle: -90, position: 'insideLeft', fontSize: isSmallScreen ? 10 : 12, offset: isSmallScreen ? 0 : -10 }}
+            allowDataOverflow={true}
+            domain={[bottom, top]}
+            type="number"
+            tickFormatter={(value) => formatYAxis(value, currentOption.y1)}
+            tick={{fontSize: isSmallScreen ? 10 : 12}}
+            width={isSmallScreen ? 30 : 60}
+            label={isSmallScreen ? null : { value: currentOption.y1, angle: -90, position: 'insideLeft' }}
           />
           <YAxis 
             yAxisId="right" 
             orientation="right"
-            {...getYAxisProps(true)}
-            label={{ value: currentOption.y2, angle: 90, position: 'insideRight', fontSize: isSmallScreen ? 10 : 12, offset: isSmallScreen ? 0 : -10 }}
+            allowDataOverflow={true}
+            domain={['auto', 'auto']}
+            tickFormatter={(value) => formatYAxis(value, currentOption.y2)}
+            tick={{fontSize: isSmallScreen ? 10 : 12}}
+            width={isSmallScreen ? 30 : 60}
+            label={isSmallScreen ? null : { value: currentOption.y2, angle: 90, position: 'insideRight' }}
           />
           <Tooltip formatter={formatTooltip} />
           <Legend 
@@ -186,7 +207,12 @@ const DataChart = ({ data, selectedGraph }) => {
             <ReferenceArea yAxisId="left" x1={refAreaLeft} x2={refAreaRight} strokeOpacity={0.3} />
           ) : null}
           
-          <Brush dataKey="stroke" height={30} stroke="#8884d8" />
+          <Brush
+            dataKey="stroke"
+            height={20}
+            stroke="#8884d8"
+            className={isSmallScreen ? 'small-screen-brush' : ''}
+          />
         </LineChart>
       </ResponsiveContainer>
     </div>
