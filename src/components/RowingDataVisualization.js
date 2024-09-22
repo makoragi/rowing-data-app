@@ -15,18 +15,8 @@ const RowingDataVisualization = () => {
   const [sessionSummary, setSessionSummary] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [useCalendar, setUseCalendar] = useState(true);
-
-  useEffect(() => {
-    fetchAvailableFiles(setAvailableFiles, setError);
-  }, []);
-
-  useEffect(() => {
-    if (selectedFile) {
-      fetchData(selectedFile);
-    }
-  }, [selectedFile]);
+  const [loading, setLoading] = useState(true);
+  const [useCalendar, setUseCalendar] = useState(false);
 
   const fetchData = useCallback(async (fileName) => {
     setLoading(true);
@@ -39,11 +29,27 @@ const RowingDataVisualization = () => {
       setStartTime(startTime);
     } catch (error) {
       console.error('Error fetching or parsing CSV:', error);
-      setError('Failed to load or parse the CSV file. Please try again.');
+      setError(`CSVファイルの読み込みまたは解析に失敗しました: ${error.message}`);
     } finally {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    const initializeData = async () => {
+      await fetchAvailableFiles(setAvailableFiles, setError);
+    };
+
+    initializeData();
+  }, []);
+
+  useEffect(() => {
+    if (availableFiles.length > 0) {
+      const latestFile = availableFiles[availableFiles.length - 1];
+      setSelectedFile(latestFile);
+      fetchData(latestFile);
+    }
+  }, [availableFiles, fetchData]);
 
   const toggleSelector = () => {
     setUseCalendar(!useCalendar);
@@ -79,13 +85,14 @@ const RowingDataVisualization = () => {
 
       {error && (
         <div className="error-message">
-          {error}
+          <h3>エラー:</h3>
+          <p>{error}</p>
         </div>
       )}
 
       {loading ? (
         <div className="loading-spinner">
-          Loading...
+          読み込み中...
         </div>
       ) : data.length > 0 ? (
         <>
@@ -95,8 +102,9 @@ const RowingDataVisualization = () => {
           <SessionInfo startTime={startTime} summary={sessionSummary} />
         </>
       ) : (
-        <p className="no-data-message">Please select a file to visualize data.</p>
+        <p className="no-data-message">表示するデータがありません。ファイルを選択してください。</p>
       )}
+
     </div>
   );
 };
