@@ -1,16 +1,11 @@
-// src/utils/formatters.js
 export const formatYAxis = (value, dataKey) => {
-  if (dataKey === 'elapsedTime') {
-    return value;
-  }
-  return typeof value === 'number' ? value.toFixed(2) : value;
+  // 整数に丸めて表示
+  return Math.round(value).toString();
 };
 
 export const formatTooltip = (value, name) => {
-  if (name === 'elapsedTime') {
-    return value;
-  }
   if (typeof value === 'number') {
+    // ツールチップでは小数点以下2桁まで表示
     return value.toFixed(2);
   }
   return value;

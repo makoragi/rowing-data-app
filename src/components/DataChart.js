@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ResponsiveContainer, ReferenceArea, Brush
@@ -68,14 +68,59 @@ const DataChart = ({ data, selectedGraph }) => {
 
   const isSmallScreen = chartWidth < 600;
 
+  const getIntegerTicks = (dataMin, dataMax, tickCount = 5, isDistance = false) => {
+    let range = dataMax - dataMin;
+    let step;
+
+    if (isDistance) {
+      // Distanceの場合、100または500単位の刻みを設定
+      if (range > 2000) {
+        step = 500;
+      } else {
+        step = 100;
+      }
+    } else {
+      step = Math.ceil(range / (tickCount - 1));
+    }
+
+    const start = Math.floor(dataMin / step) * step;
+    const end = Math.ceil(dataMax / step) * step;
+    const ticks = [];
+
+    for (let i = start; i <= end; i += step) {
+      ticks.push(i);
+    }
+
+    return ticks;
+  };
+
+  const yAxisDomains = useMemo(() => {
+    const leftData = data.map(item => item[currentOption.y1]);
+    const rightData = data.map(item => item[currentOption.y2]);
+    const leftMin = Math.min(...leftData);
+    const leftMax = Math.max(...leftData);
+    const rightMin = Math.min(...rightData);
+    const rightMax = Math.max(...rightData);
+
+    return {
+      left: [Math.floor(leftMin), Math.ceil(leftMax)],
+      right: [Math.floor(rightMin), Math.ceil(rightMax)]
+    };
+  }, [data, currentOption]);
+
+
   const getYAxisProps = (isRight = false) => {
+    const domain = yAxisDomains[isRight ? 'right' : 'left'];
+    const isDistance = !isRight && currentOption.y1 === 'distance';
     const commonProps = {
       allowDataOverflow: true,
-      tickFormatter: (value) => formatYAxis(value, isRight ? currentOption.y2 : currentOption.y1),
+      tickFormatter: (value) => Math.round(value).toString(), // 整数のみを表示
       tick: { fontSize: isSmallScreen ? 10 : 12 },
       width: 60,
+      domain: domain,
+      ticks: getIntegerTicks(domain[0], domain[1], 5, isDistance)
     };
-
+  
     if (isSmallScreen) {
       return {
         ...commonProps,
@@ -96,7 +141,7 @@ const DataChart = ({ data, selectedGraph }) => {
       };
     }
   };
-  
+
   return (
     <div className="data-chart-container">
       <button className="zoom-out-btn" onClick={zoomOut}>ズームアウト</button>
@@ -120,15 +165,12 @@ const DataChart = ({ data, selectedGraph }) => {
           <YAxis 
             yAxisId="left"
             {...getYAxisProps()}
-            domain={[bottom, top]}
-            type="number"
             label={{ value: currentOption.y1, angle: -90, position: 'insideLeft', fontSize: isSmallScreen ? 10 : 12, offset: isSmallScreen ? 0 : -10 }}
           />
           <YAxis 
             yAxisId="right" 
             orientation="right"
             {...getYAxisProps(true)}
-            domain={['auto', 'auto']}
             label={{ value: currentOption.y2, angle: 90, position: 'insideRight', fontSize: isSmallScreen ? 10 : 12, offset: isSmallScreen ? 0 : -10 }}
           />
           <Tooltip formatter={formatTooltip} />
