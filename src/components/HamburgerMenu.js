@@ -22,6 +22,7 @@ const HamburgerMenu = ({ onSelectScreen }) => {
       <nav className={`side-menu ${isOpen ? 'open' : ''}`}>
         <button onClick={() => handleSelectScreen('built-in')}>WAKANA SC</button>
         <button onClick={() => handleSelectScreen('upload')}>アップロードデータ表示</button>
+        <button onClick={() => handleSelectScreen('compare')}>データ比較</button>
       </nav>
       {isOpen && <div className="overlay" onClick={toggleMenu}></div>}
     </div>
