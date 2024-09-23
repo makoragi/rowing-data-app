@@ -77,6 +77,7 @@ const CompareRowingData = () => {
       <GraphSelector
         selectedGraph={selectedGraph}
         onGraphChange={setSelectedGraph}
+        isComparisonView={true}
       />
 
       {error && (
@@ -93,11 +94,16 @@ const CompareRowingData = () => {
       ) : (data1.length > 0 || data2.length > 0) ? (
         <>
           <div className="chart-container">
-            <DataChart data1={data1} data2={data2} selectedGraph={selectedGraph} />
+            <DataChart 
+              data1={data1.length > 0 ? data1 : null} 
+              data2={data2.length > 0 ? data2 : null} 
+              selectedGraph={selectedGraph} 
+              isComparisonView={true}
+            />
           </div>
           <div className="session-info-container">
-            <SessionInfo startTime={startTime1} summary={sessionSummary1} label="セッション1" />
-            <SessionInfo startTime={startTime2} summary={sessionSummary2} label="セッション2" />
+            {data1.length > 0 && <SessionInfo startTime={startTime1} summary={sessionSummary1} label="セッション1" />}
+            {data2.length > 0 && <SessionInfo startTime={startTime2} summary={sessionSummary2} label="セッション2" />}
           </div>
         </>
       ) : (

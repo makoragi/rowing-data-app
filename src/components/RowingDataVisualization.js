@@ -85,6 +85,7 @@ const RowingDataVisualization = () => {
         <GraphSelector
           selectedGraph={selectedGraph}
           onGraphChange={setSelectedGraph}
+          isComparisonView={false}
         />
       </div>
 
