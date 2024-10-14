@@ -6,9 +6,11 @@ import FileSelector from './FileSelector';
 import GraphSelector from './GraphSelector';
 import DataChart from './DataChart';
 import SessionInfo from './SessionInfo';
+import MapView from './MapView';
 
 const RowingDataVisualization = () => {
   const [data, setData] = useState([]);
+  const [segments, setSegments] = useState([]);
   const [selectedFile, setSelectedFile] = useState('');
   const [availableFiles, setAvailableFiles] = useState([]);
   const [selectedGraph, setSelectedGraph] = useState('distance-speed');
@@ -22,9 +24,11 @@ const RowingDataVisualization = () => {
     setLoading(true);
     setError(null);
     try {
-    const csvText = await fetchCSVData(fileName);
-    const { parsedData, summary, startTime } = parseCSV(csvText);
+      const csvText = await fetchCSVData(fileName);
+      const { parsedData, segments, summary, startTime } = parseCSV(csvText);
+      console.log('Parsed segments:', segments); // デバッグログ
       setData(parsedData);
+      setSegments(segments);
       setSessionSummary(summary);
       setStartTime(startTime);
     } catch (error) {
@@ -105,6 +109,9 @@ const RowingDataVisualization = () => {
             <DataChart data={data} selectedGraph={selectedGraph} />
           </div>
           <SessionInfo startTime={startTime} summary={sessionSummary} />
+          <div className="map-container">
+            <MapView segments={segments} />
+          </div>
         </>
       ) : (
         <p className="no-data-message">表示するデータがありません。ファイルを選択してください。</p>
