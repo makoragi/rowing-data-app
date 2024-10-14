@@ -6,14 +6,13 @@ export const parseCSV = (csvText) => {
   let startTime = null;
   let summary = null;
   let parsedData = [];
+  let segments = [];
 
   // Parse Start Time
   const startTimeIndex = lines.findIndex(line => line.trim().startsWith('Start Time:'));
   if (startTimeIndex !== -1) {
     const startTimeRaw = lines[startTimeIndex].split(',')[1].trim();
-    console.log('Raw start time:', startTimeRaw); // デバッグログ
     startTime = parseAndFormatDate(startTimeRaw);
-    console.log('Parsed start time:', startTime); // デバッグログ
   }
 
   // Parse Session Summary
@@ -61,9 +60,40 @@ export const parseCSV = (csvText) => {
       gpsLat: parseFloat(values[columnIndexes.gpsLat]) || null,
       gpsLon: parseFloat(values[columnIndexes.gpsLon]) || null
     };
-  }).filter(item => item.stroke !== 0 && item.distance !== 0 && item.speed !== 0);
+  }).filter(item => item.gpsLat && item.gpsLon);
 
-  return { parsedData, summary, startTime };
+  // Split data into segments of 1000m
+  let currentSegment = [];
+  let currentSegmentDistance = 0;
+  let previousDistance = 0; // 初期値として0mから開始
+  
+  parsedData.forEach((dataPoint) => {
+    const distance = dataPoint.distance; // Distance (GPS)の値
+  
+    // セグメントにデータポイントを追加
+    currentSegment.push(dataPoint);
+  
+    // 累積距離の増加分を計算
+    const distanceIncrement = distance - previousDistance;
+    currentSegmentDistance += distanceIncrement;
+  
+    // 前のデータポイントの累積距離を更新
+    previousDistance = distance;
+  
+    // セグメント距離が1000m以上になったら、新しいセグメントを開始
+    if (currentSegmentDistance >= 1000) {
+      segments.push(currentSegment);
+      currentSegment = [];
+      currentSegmentDistance = 0; // 新しいセグメントの距離をリセット
+    }
+  });
+  
+  // 最後に残ったデータポイントがある場合、それをセグメントに追加
+  if (currentSegment.length > 0) {
+    segments.push(currentSegment);
+  }
+
+  return { parsedData, segments, summary, startTime };
 };
 
 const parseAndFormatDate = (dateString) => {
