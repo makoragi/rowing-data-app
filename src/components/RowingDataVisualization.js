@@ -6,6 +6,7 @@ import FileSelector from './FileSelector';
 import GraphSelector from './GraphSelector';
 import DataChart from './DataChart';
 import SessionInfo from './SessionInfo';
+import MapView from './MapView';
 
 const RowingDataVisualization = () => {
   const [data, setData] = useState([]);
@@ -105,6 +106,9 @@ const RowingDataVisualization = () => {
             <DataChart data={data} selectedGraph={selectedGraph} />
           </div>
           <SessionInfo startTime={startTime} summary={sessionSummary} />
+          <div className="map-container">
+            <MapView coordinates={data.filter(item => item.gpsLat && item.gpsLon)} />
+          </div>
         </>
       ) : (
         <p className="no-data-message">表示するデータがありません。ファイルを選択してください。</p>

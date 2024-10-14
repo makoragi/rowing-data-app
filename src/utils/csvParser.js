@@ -44,7 +44,9 @@ export const parseCSV = (csvText) => {
     speed: headers.indexOf('Speed (GPS)'),
     strokeRate: headers.indexOf('Stroke Rate'),
     distancePerStroke: headers.indexOf(`Distance/Stroke (GPS)`),
-    elapsedTime: headers.indexOf('Elapsed Time')
+    elapsedTime: headers.indexOf('Elapsed Time'),
+    gpsLat: headers.indexOf('GPS Lat.'),
+    gpsLon: headers.indexOf('GPS Lon.')
   };
 
   parsedData = lines.slice(dataStartIndex + 4).map(line => {
@@ -55,7 +57,9 @@ export const parseCSV = (csvText) => {
       speed: parseFloat(values[columnIndexes.speed]) || 0,
       strokeRate: parseFloat(values[columnIndexes.strokeRate]) || 0,
       distancePerStroke: parseFloat(values[columnIndexes.distancePerStroke]) || 0,
-      elapsedTime: values[columnIndexes.elapsedTime] ? values[columnIndexes.elapsedTime].trim() : ''
+      elapsedTime: values[columnIndexes.elapsedTime] ? values[columnIndexes.elapsedTime].trim() : '',
+      gpsLat: parseFloat(values[columnIndexes.gpsLat]) || null,
+      gpsLon: parseFloat(values[columnIndexes.gpsLon]) || null
     };
   }).filter(item => item.stroke !== 0 && item.distance !== 0 && item.speed !== 0);
 
