@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/rowing-data-app/static/css/main.d7bd6ab8.css",
-    "main.js": "/rowing-data-app/static/js/main.10719a27.js",
+    "main.js": "/rowing-data-app/static/js/main.5489daae.js",
     "static/js/453.d3eb2dd5.chunk.js": "/rowing-data-app/static/js/453.d3eb2dd5.chunk.js",
     "index.html": "/rowing-data-app/index.html",
     "main.d7bd6ab8.css.map": "/rowing-data-app/static/css/main.d7bd6ab8.css.map",
-    "main.10719a27.js.map": "/rowing-data-app/static/js/main.10719a27.js.map",
+    "main.5489daae.js.map": "/rowing-data-app/static/js/main.5489daae.js.map",
     "453.d3eb2dd5.chunk.js.map": "/rowing-data-app/static/js/453.d3eb2dd5.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d7bd6ab8.css",
-    "static/js/main.10719a27.js"
+    "static/js/main.5489daae.js"
   ]
 }
