@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-  ResponsiveContainer, ReferenceArea, Brush
+  ResponsiveContainer, ReferenceArea, Brush, ReferenceLine
 } from 'recharts';
 import { graphOptions } from '../utils/constants';
 import { formatYAxis, formatTooltip } from '../utils/formatters';
@@ -202,6 +202,12 @@ const DataChart = ({ data, selectedGraph }) => {
           />
           <Line yAxisId="left" type="monotone" dataKey={currentOption.y1} stroke="#8884d8" name={currentOption.y1} dot={false} unit={currentOption.unit1} />
           <Line yAxisId="right" type="monotone" dataKey={currentOption.y2} stroke="#82ca9d" name={currentOption.y2} dot={false} unit={currentOption.unit2} />
+          {(currentOption.y1 === 'distancePerStroke') && (
+            <ReferenceLine yAxisId="left" y={10} label={{ value: "10m", position: 'insideLeft'  }} stroke="#8884d8" strokeDasharray="3 3" strokeWidth={2} />
+          )}
+          {(currentOption.y2 === 'distancePerStroke') && (
+            <ReferenceLine yAxisId="right" y={10} label={{ value: "10m", position: 'insideRight' }} stroke="#82ca9d" strokeDasharray="3 3" strokeWidth={2} />
+          )}
           
           {refAreaLeft && refAreaRight ? (
             <ReferenceArea yAxisId="left" x1={refAreaLeft} x2={refAreaRight} strokeOpacity={0.3} />
