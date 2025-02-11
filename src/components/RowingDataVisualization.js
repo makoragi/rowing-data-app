@@ -26,7 +26,7 @@ const RowingDataVisualization = () => {
     try {
       const csvText = await fetchCSVData(fileName);
       const { parsedData, segments, summary, startTime } = parseCSV(csvText);
-      console.log('Parsed segments:', segments); // デバッグログ
+      // console.log('Parsed segments:', segments); // デバッグログ
       setData(parsedData);
       setSegments(segments);
       setSessionSummary(summary);

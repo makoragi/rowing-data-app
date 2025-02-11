@@ -36,7 +36,7 @@ export const parseCSV = (csvText) => {
   if (dataStartIndex === -1) {
     throw new Error('Could not find "Per-Stroke Data:" in the CSV file');
   }
-  const headers = lines[dataStartIndex + 2].split(',');
+  const headers = lines[dataStartIndex + 2].split(',').map(header => header.trim());
   const columnIndexes = {
     totalStrokes: headers.indexOf('Total Strokes'),
     distance: headers.indexOf('Distance (GPS)'),
@@ -66,7 +66,7 @@ export const parseCSV = (csvText) => {
   let currentSegment = [];
   let currentSegmentDistance = 0;
   let previousDistance = 0; // 初期値として0mから開始
-  
+
   parsedData.forEach((dataPoint) => {
     const distance = dataPoint.distance; // Distance (GPS)の値
   
