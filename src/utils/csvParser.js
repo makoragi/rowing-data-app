@@ -109,9 +109,10 @@ const parseAndFormatDate = (dateString) => {
   let parsedDate;
   
   // 様々な日付形式を試行
-  const dateFormats = ['MM/dd/yyyy', 'MM/dd/yy', 'yyyy/MM/dd', 'yyyy-MM-dd'];
+  const dateFormats = ['MM/dd/yy', 'MM/dd/yyyy', 'yyyy/MM/dd', 'yyyy-MM-dd'];
   for (const format of dateFormats) {
     parsedDate = parse(datePart, format, new Date());
+    console.log(`Trying format: ${format}, Result: ${parsedDate}`); // デバッグログ
     if (isValid(parsedDate)) {
       console.log('Successful format:', format); // デバッグログ
       break;
@@ -120,7 +121,7 @@ const parseAndFormatDate = (dateString) => {
 
   // 有効な日付が見つからない場合
   if (!isValid(parsedDate)) {
-    console.error('Invalid date format:', datePart);
+    console.error('Failed to parse date:', datePart); // エラーログ
     return null;
   }
 
