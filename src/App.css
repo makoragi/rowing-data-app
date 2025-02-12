@@ -401,3 +401,21 @@ th {
     font-size: 0.8rem;
   }
 }
+
+.custom-tooltip {
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.custom-tooltip .label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.custom-tooltip p {
+  margin: 0;
+  font-size: 16px;
+}

@@ -4,7 +4,7 @@ import {
   ResponsiveContainer, ReferenceArea, Brush, ReferenceLine
 } from 'recharts';
 import { graphOptions } from '../utils/constants';
-import { formatYAxis, formatTooltip } from '../utils/formatters';
+import { formatYAxis, CustomTooltip } from '../utils/formatters';
 
 const DataChart = ({ data, selectedGraph }) => {
   const [refAreaLeft, setRefAreaLeft] = useState('');
@@ -194,7 +194,7 @@ const DataChart = ({ data, selectedGraph }) => {
             width={isSmallScreen ? 30 : 60}
             label={isSmallScreen ? null : { value: `${currentOption.y2} (${currentOption.unit2})`, angle: 90, position: 'insideRight' }}
           />
-          <Tooltip formatter={formatTooltip} />
+          <Tooltip content={<CustomTooltip data={data} />} />
           <Legend 
             verticalAlign={isSmallScreen ? "top" : "bottom"}
             height={36}
