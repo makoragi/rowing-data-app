@@ -87,7 +87,7 @@ const CSVSegmentProcessor = () => {
       newSummary["Total Strokes"] = endIndex - startIndex + 1;
     }
     if (newSummary["Total Distance (GPS)"] !== undefined) {
-      newSummary["Total Distance (GPS)"] = lastData.distance - firstData.distance + firstData.distancePerStroke;
+      newSummary["Total Distance (GPS)"] = (lastData.distance - firstData.distance + firstData.distancePerStroke).toFixed(1);
     }
     if (newSummary["Total Elapsed Time"] !== undefined) {
       if (startIndex === 0) {
