@@ -6,6 +6,7 @@ export const parseCSV = (csvText) => {
   let startTime = null;
   let summary = null;
   let parsedData = [];
+  let originalData = [];
   let segments = [];
 
   // Parse Start Time
@@ -25,9 +26,6 @@ export const parseCSV = (csvText) => {
     summary = {};
     headers.forEach((header, index) => {
       summary[header] = values[index] || '';
-      if (units[index] && units[index] !== '---') {
-        summary[header] += ` ${units[index]}`;
-      }
     });
   }
 
@@ -48,7 +46,8 @@ export const parseCSV = (csvText) => {
     gpsLon: headers.indexOf('GPS Lon.')
   };
 
-  parsedData = lines.slice(dataStartIndex + 4).map(line => {
+  originalData = lines.slice(dataStartIndex + 4);
+  parsedData = originalData.map(line => {
     const values = line.split(',');
     return {
       stroke: parseInt(values[columnIndexes.totalStrokes]) || 0,
@@ -93,7 +92,7 @@ export const parseCSV = (csvText) => {
     segments.push(currentSegment);
   }
 
-  return { parsedData, segments, summary, startTime };
+  return { parsedData, originalData, segments, summary, startTime };
 };
 
 const parseAndFormatDate = (dateString) => {

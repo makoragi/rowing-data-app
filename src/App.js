@@ -3,6 +3,7 @@ import './App.css';
 import HamburgerMenu from './components/HamburgerMenu';
 import RowingDataVisualization from './components/RowingDataVisualization';
 import UploadDataVisualization from './components/UploadDataVisualization';
+import CSVSegmentProcessor from './components/CSVSegmentProcessor';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('built-in');
@@ -14,10 +15,12 @@ function App() {
         <HamburgerMenu onSelectScreen={setCurrentScreen} />
       </header>
       <main>
-        {currentScreen === 'built-in' ? (
-          <RowingDataVisualization />
-        ) : (
+        {currentScreen === 'upload' ? (
           <UploadDataVisualization />
+        ) : currentScreen === 'processing' ? (
+          <CSVSegmentProcessor />
+        ) : (
+          <RowingDataVisualization />
         )}
       </main>
     </div>
