@@ -89,6 +89,52 @@ const CSVSegmentProcessor = () => {
     if (newSummary["Total Distance (GPS)"] !== undefined) {
       newSummary["Total Distance (GPS)"] = lastData.distance - firstData.distance + firstData.distancePerStroke;
     }
+    if (newSummary["Total Elapsed Time"] !== undefined) {
+      if (startIndex === 0) {
+        newSummary["Total Elapsed Time"] = lastData.elapsedTime;
+      } else {
+        const previousData = parsedResult.parsedData[startIndex - 1] || { elapsedTime: '00:00:00' };
+        const startTime = new Date(`1970-01-01T${previousData.elapsedTime}Z`);
+        const endTime = new Date(`1970-01-01T${lastData.elapsedTime}Z`);
+        console.log(startTime, endTime);
+        const elapsedTimeMs = endTime - startTime;
+        const elapsedTimeSec = Math.floor(elapsedTimeMs / 1000);
+        const hours = Math.floor(elapsedTimeSec / 3600).toString().padStart(2, '0');
+        const minutes = Math.floor((elapsedTimeSec % 3600) / 60).toString().padStart(2, '0');
+        const seconds = (elapsedTimeSec % 60).toString().padStart(2, '0');
+        newSummary["Total Elapsed Time"] = `${hours}:${minutes}:${seconds}`;
+      }
+    }
+    if (newSummary["Avg Split (GPS)"] !== undefined) {
+      newSummary["Avg Split (GPS)"] = '---'; // 未対応
+    }
+    if (newSummary["Avg Speed (GPS)"] !== undefined) {
+      const totalDistance = newSummary["Total Distance (GPS)"];
+      const totalTime = newSummary["Total Elapsed Time"];
+      if (totalDistance !== undefined && totalTime !== undefined) {
+        const timeParts = totalTime.split(':').map(Number);
+        const totalSeconds = timeParts[0] * 3600 + timeParts[1] * 60 + timeParts[2];
+        if (totalSeconds > 0) {
+          newSummary["Avg Speed (GPS)"] = (totalDistance / totalSeconds).toFixed(2);
+        } else {
+          newSummary["Avg Speed (GPS)"] = '---';
+        }
+      } else {
+        newSummary["Avg Speed (GPS)"] = '---';
+      }
+    }
+    if (newSummary['Avg Stroke Rate'] !== undefined) {
+      newSummary['Avg Stroke Rate'] = '---'; // 未対応
+    }
+    if (newSummary['Distance/Stroke (GPS)'] !== undefined) {
+      newSummary['Distance/Stroke (GPS)'] = (newSummary["Total Distance (GPS)"] / newSummary["Total Strokes"]).toFixed(1);
+    }
+    if (newSummary["Start GPS Lat."] !== undefined) {
+      newSummary["Start GPS Lat."] = firstData.gpsLat || '';
+    }
+    if (newSummary["Start GPS Lon."] !== undefined) {
+      newSummary["Start GPS Lon."] = firstData.gpsLon || '';
+    }
     const summaryHeaders = summaryHeaderLine.split(',').map(h => h.trim());
     const newSummaryValuesLine = summaryHeaders.map(header => newSummary[header] || '').join(',');
 
