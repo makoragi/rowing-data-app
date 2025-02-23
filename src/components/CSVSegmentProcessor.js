@@ -82,11 +82,12 @@ const CSVSegmentProcessor = () => {
     // サマリ値行を新たに生成（例：指定範囲の最後のデータをもとに更新）
     const newSummary = { ...summary };
     const lastData = parsedResult.parsedData[endIndex] || parsedResult.parsedData[parsedResult.parsedData.length - 1];
+    const firstData = parsedResult.parsedData[startIndex] || parsedResult.parsedData[0];
     if (newSummary["Total Strokes"] !== undefined) {
-      newSummary["Total Strokes"] = lastData.stroke;
+      newSummary["Total Strokes"] = endIndex - startIndex + 1;
     }
-    if (newSummary["Distance (GPS)"] !== undefined) {
-      newSummary["Distance (GPS)"] = lastData.distance;
+    if (newSummary["Total Distance (GPS)"] !== undefined) {
+      newSummary["Total Distance (GPS)"] = lastData.distance - firstData.distance + firstData.distancePerStroke;
     }
     const summaryHeaders = summaryHeaderLine.split(',').map(h => h.trim());
     const newSummaryValuesLine = summaryHeaders.map(header => newSummary[header] || '').join(',');
