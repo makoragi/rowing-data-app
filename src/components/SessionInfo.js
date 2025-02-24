@@ -23,9 +23,9 @@ const SessionInfo = ({ startTime, summary }) => {
       <p>開始時間: {formattedDate}</p>
       {summary && (
         <>
-          <p>総距離: {summary['Total Distance (GPS)']}</p>
-          <p>総時間: {summary['Total Elapsed Time']}</p>
-          <p>平均速度: {summary['Avg Speed (GPS)']}</p>
+          <p>総距離: {summary['Total Distance (GPS)']} (Meters)</p>
+          <p>総時間: {summary['Total Elapsed Time']} (HH:MM:SS.tenths)</p>
+          <p>平均速度: {summary['Avg Speed (GPS)']} (M/S)</p>
         </>
       )}
     </div>
