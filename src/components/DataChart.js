@@ -15,6 +15,8 @@ const DataChart = ({ data, selectedGraph }) => {
   const [bottom, setBottom] = useState('dataMin-1');
   const [chartWidth, setChartWidth] = useState(window.innerWidth);
   const [chartHeight, setChartHeight] = useState(400);
+  const [showReferenceLine1, setShowReferenceLine1] = useState(true);
+  const [showReferenceLine2, setShowReferenceLine2] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
@@ -154,9 +156,30 @@ const DataChart = ({ data, selectedGraph }) => {
     }
   };
 
+  const isDistancePerStroke = currentOption.y1 === 'distancePerStroke' || currentOption.y2 === 'distancePerStroke';
+  const isSpeed = currentOption.y1 === 'speed' || currentOption.y2 === 'speed';
+
   return (
     <div className="data-chart-container">
       <button className="zoom-out-btn" onClick={zoomOut}>ズームアウト</button>
+      <label>
+        <input
+          type="checkbox"
+          checked={showReferenceLine1}
+          onChange={() => setShowReferenceLine1(!showReferenceLine1)}
+          disabled={!isDistancePerStroke}
+        />
+        DistancePerStroke=10(m)
+      </label>
+      <label>
+        <input
+          type="checkbox"
+          checked={showReferenceLine2}
+          onChange={() => setShowReferenceLine2(!showReferenceLine2)}
+          disabled={!isSpeed}
+        />
+        Speed=4(m/s)
+      </label>
       <ResponsiveContainer width="100%" height={chartHeight}>
         <LineChart
           data={data}
@@ -202,11 +225,17 @@ const DataChart = ({ data, selectedGraph }) => {
           />
           <Line yAxisId="left" type="monotone" dataKey={currentOption.y1} stroke="#8884d8" name={currentOption.y1} dot={false} unit={currentOption.unit1} />
           <Line yAxisId="right" type="monotone" dataKey={currentOption.y2} stroke="#82ca9d" name={currentOption.y2} dot={false} unit={currentOption.unit2} />
-          {(currentOption.y1 === 'distancePerStroke') && (
+          {showReferenceLine1 && currentOption.y1 === 'distancePerStroke' && (
             <ReferenceLine yAxisId="left" y={10} label={{ value: "10m", position: 'insideLeft'  }} stroke="#8884d8" strokeDasharray="3 3" strokeWidth={2} />
           )}
-          {(currentOption.y2 === 'distancePerStroke') && (
+          {showReferenceLine1 && currentOption.y2 === 'distancePerStroke' && (
             <ReferenceLine yAxisId="right" y={10} label={{ value: "10m", position: 'insideRight' }} stroke="#82ca9d" strokeDasharray="3 3" strokeWidth={2} />
+          )}
+          {showReferenceLine2 && currentOption.y1 === 'speed' && (
+            <ReferenceLine yAxisId="left" y={4} label={{ value: "4m/s", position: 'insideLeft'  }} stroke="#8884d8" strokeDasharray="3 3" strokeWidth={2} />
+          )}
+          {showReferenceLine2 && currentOption.y2 === 'speed' && (
+            <ReferenceLine yAxisId="right" y={4} label={{ value: "4m/s", position: 'insideRight' }} stroke="#82ca9d" strokeDasharray="3 3" strokeWidth={2} />
           )}
           
           {refAreaLeft && refAreaRight ? (
