@@ -162,7 +162,7 @@ const DataChart = ({ data, selectedGraph }) => {
   return (
     <div className="data-chart-container">
       <button className="zoom-out-btn" onClick={zoomOut}>ズームアウト</button>
-      <label>
+      <label className="reference-line-label">
         <input
           type="checkbox"
           checked={showReferenceLine1}
@@ -171,7 +171,7 @@ const DataChart = ({ data, selectedGraph }) => {
         />
         DistancePerStroke=10(m)
       </label>
-      <label>
+      <label className="reference-line-label">
         <input
           type="checkbox"
           checked={showReferenceLine2}
