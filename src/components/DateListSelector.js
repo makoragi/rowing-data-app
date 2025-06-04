@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 const DateListSelector = ({ availableFiles, onFileSelect, selectedFile }) => {
   const sortedFiles = useMemo(() => {
-    return availableFiles.sort((a, b) => {
+    return [...availableFiles].sort((a, b) => {
       const dateA = new Date(a.split('_')[0]);
       const dateB = new Date(b.split('_')[0]);
       return dateB - dateA;
