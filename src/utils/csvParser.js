@@ -96,14 +96,14 @@ export const parseCSV = (csvText) => {
 };
 
 const parseAndFormatDate = (dateString) => {
-  console.log('Parsing date string:', dateString); // デバッグログ
+  // console.log('Parsing date string:', dateString); // デバッグログ
 
   // 日付と時刻を分割
   const [datePart, ...timeParts] = dateString.split(' ');
   const timePart = timeParts.join(' '); // 時刻部分を再結合
+  // console.log('Date part:', datePart); // デバッグログ
+  // console.log('Time part:', timePart); // デバッグログ
 
-  console.log('Date part:', datePart); // デバッグログ
-  console.log('Time part:', timePart); // デバッグログ
 
   let parsedDate;
   
@@ -111,9 +111,9 @@ const parseAndFormatDate = (dateString) => {
   const dateFormats = ['MM/dd/yy', 'MM/dd/yyyy', 'yyyy/MM/dd', 'yyyy-MM-dd'];
   for (const format of dateFormats) {
     parsedDate = parse(datePart, format, new Date());
-    console.log(`Trying format: ${format}, Result: ${parsedDate}`); // デバッグログ
+    // console.log(`Trying format: ${format}, Result: ${parsedDate}`); // デバッグログ
     if (isValid(parsedDate)) {
-      console.log('Successful format:', format); // デバッグログ
+      // console.log('Successful format:', format); // デバッグログ
       break;
     }
   }
@@ -146,7 +146,7 @@ const parseAndFormatDate = (dateString) => {
 
   // フォーマットして返す
   const formattedDate = format(parsedDate, 'yyyy-MM-dd HH:mm');
-  console.log('Formatted date:', formattedDate); // デバッグログ
+  // console.log('Formatted date:', formattedDate); // デバッグログ
   return formattedDate;
 };
 
