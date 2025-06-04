@@ -1,70 +1,42 @@
-# Getting Started with Create React App
+# Rowing Data Visualization
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Rowing Data Visualization は、ボートトレーニングのセッションデータを分析できる React アプリです。サンプル CSV の読み込みやファイルアップロードに対応し、グラフや地図表示で走行データを確認できます。
 
-## Available Scripts
+## セットアップ
 
-In the project directory, you can run:
+依存パッケージをインストールし、開発サーバーを起動します。
 
-### `npm start`
+```bash
+npm install
+npm start
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+ブラウザで http://localhost:3000 を開くとアプリが動作します。
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### ビルド
 
-### `npm test`
+本番用ビルドを `build/` フォルダーに生成します。
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm run build
+```
 
-### `npm run build`
+### テスト
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+テストスイートを実行します。
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+npm test
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 使い方
 
-### `npm run eject`
+- `public/data` に CSV を追加し、`public/available_files.json` に登録すると選択肢として表示されます。
+- アップロード画面から手元の CSV を読み込んで即座に可視化することもできます。
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 主な機能
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- カレンダーまたはリストからセッションを選択可能
+- 距離・速度・ストロークレートのグラフ表示
+- OpenStreetMap タイルを利用した航路の地図表示
+- CSV データをアップロードしてその場で解析
