@@ -18,6 +18,14 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
   const containerRef = useRef(null);
   const [showReferenceLine1, setShowReferenceLine1] = useState(true);
   const [showReferenceLine2, setShowReferenceLine2] = useState(true);
+  const [showTooltip, setShowTooltip] = useState(true);
+  const [brushStart, setBrushStart] = useState(0);
+  const [brushEnd, setBrushEnd] = useState(data.length - 1);
+
+  useEffect(() => {
+    setBrushStart(0);
+    setBrushEnd(data.length - 1);
+  }, [data]);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -37,8 +45,16 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
 
   const currentOption = getCurrentGraphOption();
 
+  const clampIndex = (idx) => {
+    if (Number.isNaN(idx)) return 0;
+    return Math.min(Math.max(idx, 0), data.length - 1);
+  };
+
   const getAxisYDomain = (from, to, ref, offset) => {
-    const refData = data.slice(from - 1, to);
+    const start = clampIndex(Math.min(from, to));
+    const end = clampIndex(Math.max(from, to));
+    const refData = data.slice(start, end + 1);
+    if (refData.length === 0) return [0, 0];
     let [bottom, top] = [refData[0][ref], refData[0][ref]];
     refData.forEach((d) => {
       if (d[ref] > top) top = d[ref];
@@ -55,13 +71,18 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
       return;
     }
 
-    let [leftIndex, rightIndex] = [refAreaLeft, refAreaRight].map(Number).sort((a, b) => a - b);
+    let [leftStroke, rightStroke] = [refAreaLeft, refAreaRight].map(Number).sort((a, b) => a - b);
+
+    const leftIndex = clampIndex(leftStroke - 1);
+    const rightIndex = clampIndex(rightStroke - 1);
 
     setRefAreaLeft('');
     setRefAreaRight('');
 
     setLeft(data[leftIndex].stroke);
     setRight(data[rightIndex].stroke);
+    setBrushStart(leftIndex);
+    setBrushEnd(rightIndex);
 
     const [bottom, top] = getAxisYDomain(leftIndex, rightIndex, currentOption.y1, 1);
     setBottom(bottom);
@@ -72,6 +93,22 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
     }
   };
 
+  const handleBrushChange = useCallback(({ startIndex, endIndex }) => {
+    if (startIndex == null || endIndex == null) return;
+    const start = clampIndex(Math.min(startIndex, endIndex));
+    const end = clampIndex(Math.max(startIndex, endIndex));
+    setBrushStart(start);
+    setBrushEnd(end);
+    setLeft(data[start].stroke);
+    setRight(data[end].stroke);
+    const [b, t] = getAxisYDomain(start, end, currentOption.y1, 1);
+    setBottom(b);
+    setTop(t);
+    if (onRangeSelect) {
+      onRangeSelect({ start, end });
+    }
+  }, [data, currentOption, onRangeSelect]);
+
   const zoomOut = () => {
     setRefAreaLeft('');
     setRefAreaRight('');
@@ -79,6 +116,8 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
     setRight('dataMax');
     setTop('dataMax+1');
     setBottom('dataMin');
+    setBrushStart(0);
+    setBrushEnd(data.length - 1);
     if (onRangeSelect) onRangeSelect(null);
   };
 
@@ -183,6 +222,14 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
         />
         Speed=4(m/s)
       </label>
+      <label className="reference-line-label">
+        <input
+          type="checkbox"
+          checked={showTooltip}
+          onChange={() => setShowTooltip(!showTooltip)}
+        />
+        Tooltip表示
+      </label>
       <ResponsiveContainer width="100%" height={chartHeight}>
         <LineChart
           data={data}
@@ -220,7 +267,7 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
             width={isSmallScreen ? 30 : 60}
             label={isSmallScreen ? null : { value: `${currentOption.y2} (${currentOption.unit2})`, angle: 90, position: 'insideRight' }}
           />
-          <Tooltip content={<CustomTooltip data={data} />} />
+          {showTooltip && <Tooltip content={<CustomTooltip data={data} />} />}
           <Legend 
             verticalAlign={isSmallScreen ? "top" : "bottom"}
             height={36}
@@ -249,6 +296,9 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
             dataKey="stroke"
             height={20}
             stroke="#8884d8"
+            startIndex={brushStart}
+            endIndex={brushEnd}
+            onChange={handleBrushChange}
             className={isSmallScreen ? 'small-screen-brush' : ''}
           />
         </LineChart>
