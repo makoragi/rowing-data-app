@@ -17,6 +17,13 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
   const [chartHeight, setChartHeight] = useState(400);
   const [showReferenceLine1, setShowReferenceLine1] = useState(true);
   const [showReferenceLine2, setShowReferenceLine2] = useState(true);
+  const [brushStart, setBrushStart] = useState(0);
+  const [brushEnd, setBrushEnd] = useState(data.length - 1);
+
+  useEffect(() => {
+    setBrushStart(0);
+    setBrushEnd(data.length - 1);
+  }, [data]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -35,8 +42,16 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
 
   const currentOption = getCurrentGraphOption();
 
+  const clampIndex = (idx) => {
+    if (Number.isNaN(idx)) return 0;
+    return Math.min(Math.max(idx, 0), data.length - 1);
+  };
+
   const getAxisYDomain = (from, to, ref, offset) => {
-    const refData = data.slice(from - 1, to);
+    const start = clampIndex(Math.min(from, to));
+    const end = clampIndex(Math.max(from, to));
+    const refData = data.slice(start, end + 1);
+    if (refData.length === 0) return [0, 0];
     let [bottom, top] = [refData[0][ref], refData[0][ref]];
     refData.forEach((d) => {
       if (d[ref] > top) top = d[ref];
@@ -53,13 +68,18 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
       return;
     }
 
-    let [leftIndex, rightIndex] = [refAreaLeft, refAreaRight].map(Number).sort((a, b) => a - b);
+    let [leftStroke, rightStroke] = [refAreaLeft, refAreaRight].map(Number).sort((a, b) => a - b);
+
+    const leftIndex = clampIndex(leftStroke - 1);
+    const rightIndex = clampIndex(rightStroke - 1);
 
     setRefAreaLeft('');
     setRefAreaRight('');
 
     setLeft(data[leftIndex].stroke);
     setRight(data[rightIndex].stroke);
+    setBrushStart(leftIndex);
+    setBrushEnd(rightIndex);
 
     const [bottom, top] = getAxisYDomain(leftIndex, rightIndex, currentOption.y1, 1);
     setBottom(bottom);
@@ -70,6 +90,22 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
     }
   };
 
+  const handleBrushChange = useCallback(({ startIndex, endIndex }) => {
+    if (startIndex == null || endIndex == null) return;
+    const start = clampIndex(Math.min(startIndex, endIndex));
+    const end = clampIndex(Math.max(startIndex, endIndex));
+    setBrushStart(start);
+    setBrushEnd(end);
+    setLeft(data[start].stroke);
+    setRight(data[end].stroke);
+    const [b, t] = getAxisYDomain(start, end, currentOption.y1, 1);
+    setBottom(b);
+    setTop(t);
+    if (onRangeSelect) {
+      onRangeSelect({ start, end });
+    }
+  }, [data, currentOption, onRangeSelect]);
+
   const zoomOut = () => {
     setRefAreaLeft('');
     setRefAreaRight('');
@@ -77,6 +113,8 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
     setRight('dataMax');
     setTop('dataMax+1');
     setBottom('dataMin');
+    setBrushStart(0);
+    setBrushEnd(data.length - 1);
     if (onRangeSelect) onRangeSelect(null);
   };
 
@@ -252,6 +290,9 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
             dataKey="stroke"
             height={20}
             stroke="#8884d8"
+            startIndex={brushStart}
+            endIndex={brushEnd}
+            onChange={handleBrushChange}
             className={isSmallScreen ? 'small-screen-brush' : ''}
           />
         </LineChart>
