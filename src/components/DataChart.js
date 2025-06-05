@@ -17,6 +17,13 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
   const [chartHeight, setChartHeight] = useState(400);
   const [showReferenceLine1, setShowReferenceLine1] = useState(true);
   const [showReferenceLine2, setShowReferenceLine2] = useState(true);
+  const [brushStart, setBrushStart] = useState(0);
+  const [brushEnd, setBrushEnd] = useState(data.length - 1);
+
+  useEffect(() => {
+    setBrushStart(0);
+    setBrushEnd(data.length - 1);
+  }, [data]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,6 +67,8 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
 
     setLeft(data[leftIndex].stroke);
     setRight(data[rightIndex].stroke);
+    setBrushStart(leftIndex);
+    setBrushEnd(rightIndex);
 
     const [bottom, top] = getAxisYDomain(leftIndex, rightIndex, currentOption.y1, 1);
     setBottom(bottom);
@@ -70,6 +79,19 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
     }
   };
 
+  const handleBrushChange = useCallback(({ startIndex, endIndex }) => {
+    setBrushStart(startIndex);
+    setBrushEnd(endIndex);
+    setLeft(data[startIndex].stroke);
+    setRight(data[endIndex].stroke);
+    const [b, t] = getAxisYDomain(startIndex, endIndex, currentOption.y1, 1);
+    setBottom(b);
+    setTop(t);
+    if (onRangeSelect) {
+      onRangeSelect({ start: startIndex, end: endIndex });
+    }
+  }, [data, currentOption, onRangeSelect]);
+
   const zoomOut = () => {
     setRefAreaLeft('');
     setRefAreaRight('');
@@ -77,6 +99,8 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
     setRight('dataMax');
     setTop('dataMax+1');
     setBottom('dataMin');
+    setBrushStart(0);
+    setBrushEnd(data.length - 1);
     if (onRangeSelect) onRangeSelect(null);
   };
 
@@ -252,6 +276,9 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
             dataKey="stroke"
             height={20}
             stroke="#8884d8"
+            startIndex={brushStart}
+            endIndex={brushEnd}
+            onChange={handleBrushChange}
             className={isSmallScreen ? 'small-screen-brush' : ''}
           />
         </LineChart>
