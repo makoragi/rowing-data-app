@@ -110,13 +110,15 @@ const RowingDataVisualization = () => {
         </div>
       ) : data.length > 0 ? (
         <>
-          <div className="chart-container">
-            <DataChart data={data} selectedGraph={selectedGraph} onRangeSelect={handleRangeSelect} />
+          <div className="chart-map-wrapper">
+            <div className="chart-container">
+              <DataChart data={data} selectedGraph={selectedGraph} onRangeSelect={handleRangeSelect} />
+            </div>
+            <div className="map-container">
+              <MapView segments={segments} data={data} highlightRange={highlightRange} />
+            </div>
           </div>
           <SessionInfo startTime={startTime} summary={sessionSummary} />
-          <div className="map-container">
-            <MapView segments={segments} data={data} highlightRange={highlightRange} />
-          </div>
         </>
       ) : (
         <p className="no-data-message">表示するデータがありません。ファイルを選択してください。</p>
