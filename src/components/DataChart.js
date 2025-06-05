@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ResponsiveContainer, ReferenceArea, Brush, ReferenceLine
@@ -13,20 +13,22 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
   const [right, setRight] = useState('dataMax');
   const [top, setTop] = useState('dataMax+1');
   const [bottom, setBottom] = useState('dataMin-1');
-  const [chartWidth, setChartWidth] = useState(window.innerWidth);
+  const [chartWidth, setChartWidth] = useState(0);
   const [chartHeight, setChartHeight] = useState(400);
+  const containerRef = useRef(null);
   const [showReferenceLine1, setShowReferenceLine1] = useState(true);
   const [showReferenceLine2, setShowReferenceLine2] = useState(true);
 
   useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
+    const updateDimensions = () => {
+      const width = containerRef.current ? containerRef.current.offsetWidth : window.innerWidth;
       setChartWidth(width);
       setChartHeight(width <= 680 ? 300 : 400);
     };
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
+
+    window.addEventListener('resize', updateDimensions);
+    updateDimensions();
+    return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
   const getCurrentGraphOption = useCallback(() => {
@@ -80,11 +82,6 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
     if (onRangeSelect) onRangeSelect(null);
   };
 
-  useEffect(() => {
-    const handleResize = () => setChartWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const isSmallScreen = chartWidth <= 680;
 
@@ -166,7 +163,7 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
   const isSpeed = currentOption.y1 === 'speed' || currentOption.y2 === 'speed';
 
   return (
-    <div className="data-chart-container">
+    <div className="data-chart-container" ref={containerRef}>
       <button className="zoom-out-btn" onClick={zoomOut}>ズームアウト</button>
       <label className="reference-line-label">
         <input
