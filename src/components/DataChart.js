@@ -43,7 +43,8 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
   const currentOption = getCurrentGraphOption();
 
   const getAxisYDomain = (from, to, ref, offset) => {
-    const refData = data.slice(from - 1, to);
+    const refData = data.slice(from, to + 1);
+    if (refData.length === 0) return [0, 0];
     let [bottom, top] = [refData[0][ref], refData[0][ref]];
     refData.forEach((d) => {
       if (d[ref] > top) top = d[ref];
@@ -60,7 +61,10 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
       return;
     }
 
-    let [leftIndex, rightIndex] = [refAreaLeft, refAreaRight].map(Number).sort((a, b) => a - b);
+    let [leftStroke, rightStroke] = [refAreaLeft, refAreaRight].map(Number).sort((a, b) => a - b);
+
+    const leftIndex = Math.max(0, leftStroke - 1);
+    const rightIndex = Math.min(data.length - 1, rightStroke - 1);
 
     setRefAreaLeft('');
     setRefAreaRight('');
@@ -80,6 +84,7 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
   };
 
   const handleBrushChange = useCallback(({ startIndex, endIndex }) => {
+    if (startIndex == null || endIndex == null) return;
     setBrushStart(startIndex);
     setBrushEnd(endIndex);
     setLeft(data[startIndex].stroke);
