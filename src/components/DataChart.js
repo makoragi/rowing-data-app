@@ -17,6 +17,7 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
   const [chartHeight, setChartHeight] = useState(400);
   const [showReferenceLine1, setShowReferenceLine1] = useState(true);
   const [showReferenceLine2, setShowReferenceLine2] = useState(true);
+  const [showTooltip, setShowTooltip] = useState(true);
   const [brushStart, setBrushStart] = useState(0);
   const [brushEnd, setBrushEnd] = useState(data.length - 1);
 
@@ -224,6 +225,14 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
         />
         Speed=4(m/s)
       </label>
+      <label className="reference-line-label">
+        <input
+          type="checkbox"
+          checked={showTooltip}
+          onChange={() => setShowTooltip(!showTooltip)}
+        />
+        Tooltip表示
+      </label>
       <ResponsiveContainer width="100%" height={chartHeight}>
         <LineChart
           data={data}
@@ -261,7 +270,7 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
             width={isSmallScreen ? 30 : 60}
             label={isSmallScreen ? null : { value: `${currentOption.y2} (${currentOption.unit2})`, angle: 90, position: 'insideRight' }}
           />
-          <Tooltip content={<CustomTooltip data={data} />} />
+          {showTooltip && <Tooltip content={<CustomTooltip data={data} />} />}
           <Legend 
             verticalAlign={isSmallScreen ? "top" : "bottom"}
             height={36}
