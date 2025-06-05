@@ -42,8 +42,15 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
 
   const currentOption = getCurrentGraphOption();
 
+  const clampIndex = (idx) => {
+    if (Number.isNaN(idx)) return 0;
+    return Math.min(Math.max(idx, 0), data.length - 1);
+  };
+
   const getAxisYDomain = (from, to, ref, offset) => {
-    const refData = data.slice(from, to + 1);
+    const start = clampIndex(Math.min(from, to));
+    const end = clampIndex(Math.max(from, to));
+    const refData = data.slice(start, end + 1);
     if (refData.length === 0) return [0, 0];
     let [bottom, top] = [refData[0][ref], refData[0][ref]];
     refData.forEach((d) => {
@@ -63,8 +70,8 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
 
     let [leftStroke, rightStroke] = [refAreaLeft, refAreaRight].map(Number).sort((a, b) => a - b);
 
-    const leftIndex = Math.max(0, leftStroke - 1);
-    const rightIndex = Math.min(data.length - 1, rightStroke - 1);
+    const leftIndex = clampIndex(leftStroke - 1);
+    const rightIndex = clampIndex(rightStroke - 1);
 
     setRefAreaLeft('');
     setRefAreaRight('');
@@ -85,15 +92,17 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
 
   const handleBrushChange = useCallback(({ startIndex, endIndex }) => {
     if (startIndex == null || endIndex == null) return;
-    setBrushStart(startIndex);
-    setBrushEnd(endIndex);
-    setLeft(data[startIndex].stroke);
-    setRight(data[endIndex].stroke);
-    const [b, t] = getAxisYDomain(startIndex, endIndex, currentOption.y1, 1);
+    const start = clampIndex(Math.min(startIndex, endIndex));
+    const end = clampIndex(Math.max(startIndex, endIndex));
+    setBrushStart(start);
+    setBrushEnd(end);
+    setLeft(data[start].stroke);
+    setRight(data[end].stroke);
+    const [b, t] = getAxisYDomain(start, end, currentOption.y1, 1);
     setBottom(b);
     setTop(t);
     if (onRangeSelect) {
-      onRangeSelect({ start: startIndex, end: endIndex });
+      onRangeSelect({ start, end });
     }
   }, [data, currentOption, onRangeSelect]);
 
