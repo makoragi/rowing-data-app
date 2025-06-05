@@ -11,6 +11,7 @@ import MapView from './MapView';
 const RowingDataVisualization = () => {
   const [data, setData] = useState([]);
   const [segments, setSegments] = useState([]);
+  const [highlightRange, setHighlightRange] = useState(null);
   const [selectedFile, setSelectedFile] = useState('');
   const [availableFiles, setAvailableFiles] = useState([]);
   const [selectedGraph, setSelectedGraph] = useState('distance-speed');
@@ -64,6 +65,10 @@ const RowingDataVisualization = () => {
     setUseCalendar(!useCalendar);
   };
 
+  const handleRangeSelect = (range) => {
+    setHighlightRange(range);
+  };
+
   return (
     <div className="rowing-data-container">
       <h2 className="wakana-sc-title">WAKANA SC</h2>
@@ -106,11 +111,11 @@ const RowingDataVisualization = () => {
       ) : data.length > 0 ? (
         <>
           <div className="chart-container">
-            <DataChart data={data} selectedGraph={selectedGraph} />
+            <DataChart data={data} selectedGraph={selectedGraph} onRangeSelect={handleRangeSelect} />
           </div>
           <SessionInfo startTime={startTime} summary={sessionSummary} />
           <div className="map-container">
-            <MapView segments={segments} />
+            <MapView segments={segments} data={data} highlightRange={highlightRange} />
           </div>
         </>
       ) : (
