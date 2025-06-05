@@ -28,6 +28,11 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
   }, [data]);
 
   useEffect(() => {
+    setBrushStart(0);
+    setBrushEnd(data.length - 1);
+  }, [data]);
+
+  useEffect(() => {
     const updateDimensions = () => {
       const width = containerRef.current ? containerRef.current.offsetWidth : window.innerWidth;
       setChartWidth(width);
