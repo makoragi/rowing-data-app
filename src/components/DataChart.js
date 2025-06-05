@@ -6,7 +6,7 @@ import {
 import { graphOptions } from '../utils/constants';
 import { formatYAxis, CustomTooltip } from '../utils/formatters';
 
-const DataChart = ({ data, selectedGraph }) => {
+const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
   const [refAreaLeft, setRefAreaLeft] = useState('');
   const [refAreaRight, setRefAreaRight] = useState('');
   const [left, setLeft] = useState('dataMin');
@@ -49,6 +49,7 @@ const DataChart = ({ data, selectedGraph }) => {
     if (refAreaLeft === refAreaRight || refAreaRight === '') {
       setRefAreaLeft('');
       setRefAreaRight('');
+      if (onRangeSelect) onRangeSelect(null);
       return;
     }
 
@@ -63,6 +64,10 @@ const DataChart = ({ data, selectedGraph }) => {
     const [bottom, top] = getAxisYDomain(leftIndex, rightIndex, currentOption.y1, 1);
     setBottom(bottom);
     setTop(top);
+
+    if (onRangeSelect) {
+      onRangeSelect({ start: leftIndex, end: rightIndex });
+    }
   };
 
   const zoomOut = () => {
@@ -72,6 +77,7 @@ const DataChart = ({ data, selectedGraph }) => {
     setRight('dataMax');
     setTop('dataMax+1');
     setBottom('dataMin');
+    if (onRangeSelect) onRangeSelect(null);
   };
 
   useEffect(() => {
