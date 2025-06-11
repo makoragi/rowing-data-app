@@ -6,13 +6,6 @@ import 'leaflet/dist/leaflet.css';
 const COLORS = ['blue', 'green', 'red', 'orange', 'purple', 'cyan'];
 
 const MapView = ({ segments, data, highlightRange }) => {
-  if (!segments || segments.length === 0) {
-    return <p>地図を表示するためのデータがありません。</p>;
-  }
-
-  // 最初の位置（地図の初期表示に使用）
-  const position = [segments[0][0].gpsLat, segments[0][0].gpsLon];
-
   const highlightPositions = useMemo(() => {
     if (!highlightRange || !data || data.length === 0) return null;
     const start = Math.max(0, highlightRange.start);
@@ -20,6 +13,13 @@ const MapView = ({ segments, data, highlightRange }) => {
     const slice = data.slice(start, end + 1);
     return slice.map(coord => [coord.gpsLat, coord.gpsLon]);
   }, [highlightRange, data]);
+
+  if (!segments || segments.length === 0) {
+    return <p>地図を表示するためのデータがありません。</p>;
+  }
+
+  // 最初の位置（地図の初期表示に使用）
+  const position = [segments[0][0].gpsLat, segments[0][0].gpsLon];
   
   return (
     <MapContainer center={position} zoom={13} style={{ height: '400px', width: '100%' }}>
