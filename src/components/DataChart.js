@@ -72,7 +72,7 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
     if (refAreaLeft === refAreaRight || refAreaRight === '') {
       setRefAreaLeft('');
       setRefAreaRight('');
-      if (onRangeSelect) onRangeSelect(null);
+      // ブラシ操作時はここで範囲をリセットしない
       return;
     }
 
