@@ -258,7 +258,7 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
           onMouseMove={(e) => refAreaLeft && e && setRefAreaRight(e.activeLabel)}
           onMouseUp={zoom}
           className="line-chart"
-          margin={isSmallScreen ? { top: 5, right: 10, left: -20, bottom: 20 } : { top: 5, right: 30, left: 20, bottom: 5 }}
+          margin={isSmallScreen ? { top: 5, right: 10, left: 0, bottom: 20 } : { top: 5, right: 30, left: 20, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis 
@@ -280,7 +280,15 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
             tickFormatter={(value) => formatYAxis(value, currentOption.y1)}
             tick={{fontSize: isSmallScreen ? 10 : 12}}
             width={isSmallScreen ? 30 : 60}
-            label={isSmallScreen ? null : { value: `${currentOption.y1} (${currentOption.unit1})`, angle: -90, position: 'insideLeft' }}
+            label={
+              isSmallScreen
+                ? null
+                : {
+                    value: `${currentOption.y1} (${currentOption.unit1})`,
+                    angle: -90,
+                    position: 'insideLeft',
+                  }
+            }
           />
           <YAxis
             yAxisId="right"
