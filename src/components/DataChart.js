@@ -280,16 +280,7 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
             tickFormatter={(value) => formatYAxis(value, currentOption.y1)}
             tick={{fontSize: isSmallScreen ? 10 : 12}}
             width={isSmallScreen ? 30 : 60}
-            label={
-              isSmallScreen
-                ? null
-                : {
-                    value: `${currentOption.y1} (${currentOption.unit1})`,
-                    angle: -90,
-                    position: 'insideLeft',
-                    dx: 10
-                  }
-            }
+            label={isSmallScreen ? null : { value: `${currentOption.y1} (${currentOption.unit1})`, angle: -90, position: 'insideLeft' }}
           />
           <YAxis
             yAxisId="right"

@@ -93,7 +93,7 @@ select, .file-select {
 /* チャートとデータ表示のスタイル */
 .chart-container {
   width: 100%;
-  overflow-x: hidden; /* auto から hidden に変更 */
+  overflow: visible; /* allow axis labels to extend */
   margin-bottom: 2rem;
 }
 
