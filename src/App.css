@@ -49,7 +49,7 @@ main {
 .rowing-data-container {
   padding: 1rem;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow: visible; /* allow chart labels to overflow */
 }
 
 /* セレクターとボタンのスタイル */
