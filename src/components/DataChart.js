@@ -19,6 +19,7 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
   const [showReferenceLine1, setShowReferenceLine1] = useState(true);
   const [showReferenceLine2, setShowReferenceLine2] = useState(true);
   const [showTooltip, setShowTooltip] = useState(true);
+  const [limitStrokeRate, setLimitStrokeRate] = useState(false);
   const [brushStart, setBrushStart] = useState(0);
   const [brushEnd, setBrushEnd] = useState(data.length - 1);
 
@@ -159,15 +160,22 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
     const leftData = data.map(item => item[currentOption.y1]);
     const rightData = data.map(item => item[currentOption.y2]);
     const leftMin = Math.min(...leftData);
-    const leftMax = Math.max(...leftData);
+    let leftMax = Math.max(...leftData);
     const rightMin = Math.min(...rightData);
-    const rightMax = Math.max(...rightData);
+    let rightMax = Math.max(...rightData);
+
+    if (limitStrokeRate && currentOption.y1 === 'strokeRate') {
+      leftMax = Math.min(leftMax, 40);
+    }
+    if (limitStrokeRate && currentOption.y2 === 'strokeRate') {
+      rightMax = Math.min(rightMax, 40);
+    }
 
     return {
       left: [Math.floor(leftMin), Math.ceil(leftMax)],
       right: [Math.floor(rightMin), Math.ceil(rightMax)]
     };
-  }, [data, currentOption]);
+  }, [data, currentOption, limitStrokeRate]);
 
 
   const getYAxisProps = (isRight = false) => {
@@ -235,6 +243,14 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
         />
         Tooltip表示
       </label>
+      <label className="reference-line-label">
+        <input
+          type="checkbox"
+          checked={limitStrokeRate}
+          onChange={() => setLimitStrokeRate(!limitStrokeRate)}
+        />
+        StrokeRate上限40
+      </label>
       <ResponsiveContainer width="100%" height={chartHeight}>
         <LineChart
           data={data}
@@ -252,21 +268,29 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
             type="number"
             tick={{fontSize: isSmallScreen ? 10 : 12}}
           />
-          <YAxis 
+          <YAxis
             yAxisId="left"
             allowDataOverflow={true}
-            domain={[bottom, top]}
+            domain={
+              limitStrokeRate && currentOption.y1 === 'strokeRate'
+                ? [0, 40]
+                : [bottom, top]
+            }
             type="number"
             tickFormatter={(value) => formatYAxis(value, currentOption.y1)}
             tick={{fontSize: isSmallScreen ? 10 : 12}}
             width={isSmallScreen ? 30 : 60}
             label={isSmallScreen ? null : { value: `${currentOption.y1} (${currentOption.unit1})`, angle: -90, position: 'insideLeft' }}
           />
-          <YAxis 
-            yAxisId="right" 
+          <YAxis
+            yAxisId="right"
             orientation="right"
             allowDataOverflow={true}
-            domain={['auto', 'auto']}
+            domain={
+              limitStrokeRate && currentOption.y2 === 'strokeRate'
+                ? [0, 40]
+                : ['auto', 'auto']
+            }
             tickFormatter={(value) => formatYAxis(value, currentOption.y2)}
             tick={{fontSize: isSmallScreen ? 10 : 12}}
             width={isSmallScreen ? 30 : 60}
