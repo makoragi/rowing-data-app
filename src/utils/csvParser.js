@@ -20,7 +20,6 @@ export const parseCSV = (csvText) => {
   const sessionSummaryIndex = lines.findIndex(line => line.trim() === 'Session Summary:');
   if (sessionSummaryIndex !== -1) {
     const headers = lines[sessionSummaryIndex + 2].split(',').map(header => header.trim());
-    const units = lines[sessionSummaryIndex + 3].split(',').map(unit => unit.trim());
     const values = lines[sessionSummaryIndex + 4].split(',').map(value => value.trim());
     
     summary = {};
