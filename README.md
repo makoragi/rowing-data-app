@@ -31,7 +31,7 @@ npm test
 
 ### デプロイ
 
-`master` ブランチに push すると GitHub Actions がビルドを行い、GitHub Pages が自動更新されます。
+`master` ブランチに push すると GitHub Actions がビルドを行い、GitHub Pages が自動更新されます。ワーニングによる失敗を避けるため、CI 環境変数を無効化しています。
 
 ## 使い方
 

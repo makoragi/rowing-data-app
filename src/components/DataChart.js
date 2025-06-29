@@ -113,7 +113,7 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
     if (onRangeSelect) {
       onRangeSelect({ start, end });
     }
-  }, [data, currentOption, onRangeSelect]);
+  }, [data, currentOption, onRangeSelect, clampIndex, getAxisYDomain]);
 
   const zoomOut = () => {
     setRefAreaLeft('');
@@ -178,38 +178,6 @@ const DataChart = ({ data, selectedGraph, onRangeSelect }) => {
   }, [data, currentOption, limitStrokeRate]);
 
 
-  const getYAxisProps = (isRight = false) => {
-    const domain = yAxisDomains[isRight ? 'right' : 'left'];
-    const isDistance = !isRight && currentOption.y1 === 'distance';
-    const commonProps = {
-      allowDataOverflow: true,
-      tickFormatter: (value) => Math.round(value).toString(), // 整数のみを表示
-      tick: { fontSize: isSmallScreen ? 10 : 12 },
-      width: 60,
-      domain: domain,
-      ticks: getIntegerTicks(domain[0], domain[1], 5, isDistance)
-    };
-  
-    if (isSmallScreen) {
-      return {
-        ...commonProps,
-        tickSize: 8,
-        axisLine: false,
-        tickLine: false,
-        tickMargin: 0,
-        mirror: true,
-      };
-    } else {
-      return {
-        ...commonProps,
-        tickSize: 5,
-        axisLine: true,
-        tickLine: true,
-        tickMargin: 5,
-        mirror: false,
-      };
-    }
-  };
 
   const isDistancePerStroke = currentOption.y1 === 'distancePerStroke' || currentOption.y2 === 'distancePerStroke';
   const isSpeed = currentOption.y1 === 'speed' || currentOption.y2 === 'speed';
