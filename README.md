@@ -29,6 +29,10 @@ npm run build
 npm test
 ```
 
+### デプロイ
+
+`master` ブランチに push すると GitHub Actions がビルドを行い、GitHub Pages が自動更新されます。
+
 ## 使い方
 
 - `public/data` に CSV を追加し、`public/available_files.json` に登録すると選択肢として表示されます。
