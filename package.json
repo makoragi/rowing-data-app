@@ -25,7 +25,7 @@
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+     "deploy": "gh-pages -d build -r https://x-access-token:${GITHUB_TOKEN}@github.com/makoragi/rowing-data-app.git"
   },
   "eslintConfig": {
     "extends": [
