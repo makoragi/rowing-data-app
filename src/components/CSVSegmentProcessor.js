@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { parseCSV } from '../utils/csvParser'; // 既存のCSVパーサーをインポート
 
 const CSVSegmentProcessor = () => {
-  const [fileContent, setFileContent] = useState('');
   const [parsedResult, setParsedResult] = useState(null);
   const [originalLines, setOriginalLines] = useState([]);
   const [startStroke, setStartStroke] = useState(0);
@@ -16,7 +15,6 @@ const CSVSegmentProcessor = () => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const content = event.target.result;
-      setFileContent(content);
       const lines = content.split('\n');
       setOriginalLines(lines);
       try {
