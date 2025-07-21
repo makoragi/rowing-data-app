@@ -1,7 +1,7 @@
 Session Information:,,,,Device Information:,,,,Oarlock Information:,,,,Oarlock Settings:
 
 Name:,JustGo-8049M,,,Name:,Vanilla Wakana,,,Firmware:,---,,,Boat ID:,---
-Start Time:,06/08/25 08:50�ߑO,,,Model:,SpeedCoach GPS Pro,,,,,,,Seat Number:,---
+Start Time:,06/08/25 08:50�ߑO,,,Model:,SpeedCoach GPS Pro,,,,,,,Seat Number:,---
 Type:,Just Go,,,Serial:,2981163,,,,,,,Port Starboard:,---
 System of Units:,Meters/Split500,,,Firmware Version:,2.24,,,,,,,Oar Length:,---
 Speed Input:,GPS,,,Profile Version:,0.03,,,,,,,Inboard Length:,---
@@ -13,7 +13,7 @@ Session Summary:
 
 Total Intervals,Total Distance (GPS),Total Distance (IMP),Total Elapsed Time,Avg Split (GPS),Avg Speed (GPS),Avg Split (IMP),Avg Speed (IMP),Avg Stroke Rate,Total Strokes,Distance/Stroke (GPS),Distance/Stroke (IMP),Avg Heart Rate,Avg Power,Avg Catch,Avg Slip,Avg Finish,Avg Wash,Avg Force Avg,Avg Work,Avg Force Max,Avg Max Force Angle,Start GPS Lat.,Start GPS Lon.
 (Interval),(Meters),(Meters),(HH:MM:SS.tenths),(/500),(M/S),(/500),(M/S),(SPM),(Strokes),(Meters),(Meters),(BPM),(Watts),(Degrees),(Degrees),(Degrees),(Degrees),(Newtons),(Joules),(Newtons),(Degrees),(Degrees),(Degrees)
-1,8049.0,0.0,00:49:43.9,00:03:05.8,2.69,00:00:00.0,0.00,26.0,1039,7.7,0.0,---,---,---,---,---,---,---,---,---,---,32.78924980,130.77213870
+1,7959.2,0.0,00:48:56,---,2.71,00:00:00.0,0.00,---,1029,7.7,0.0,---,---,---,---,---,---,---,---,---,---,32.7720534,130.750654
 
 
 Interval Summaries:
@@ -28,16 +28,6 @@ Per-Stroke Data:
 
 Interval,Distance (GPS),Distance (IMP),Elapsed Time,Split (GPS),Speed (GPS),Split (IMP),Speed (IMP),Stroke Rate,Total Strokes,Distance/Stroke (GPS),Distance/Stroke (IMP),Heart Rate,Power,Catch,Slip,Finish,Wash,Force Avg,Work,Force Max,Max Force Angle,GPS Lat.,GPS Lon.
 (Interval),(Meters),(Meters),(HH:MM:SS.tenths),(/500),(M/S),(/500),(M/S),(SPM),(Strokes),(Meters),(Meters),(BPM),(Watts),(Degrees),(Degrees),(Degrees),(Degrees),(Newtons),(Joules),(Newtons),(Degrees),(Degrees),(Degrees)
-1,0.0,0.0,00:00:05.7,00:00:00.0,0.00,---,---,10.5,1,0.0,0.0,---,---,---,---,---,---,---,---,---,---,32.78924980,130.77213870
-1,0.0,0.0,00:00:14.1,00:00:00.0,0.00,00:00:00.0,0.00,20.0,2,0.0,0.0,---,---,---,---,---,---,---,---,---,---,32.78654860,130.77205910
-1,8.7,0.0,00:00:17.1,00:00:00.0,0.00,00:00:00.0,0.00,20.5,3,8.7,0.0,---,---,---,---,---,---,---,---,---,---,32.77343040,130.75230610
-1,39.2,0.0,00:00:19.9,00:00:00.0,0.00,00:00:00.0,0.00,21.5,4,30.5,0.0,---,---,---,---,---,---,---,---,---,---,32.77345670,130.75199810
-1,49.4,0.0,00:00:23.7,00:00:00.0,0.00,00:00:00.0,0.00,16.0,5,10.2,0.0,---,---,---,---,---,---,---,---,---,---,32.77345960,130.75188190
-1,56.7,0.0,00:00:26.1,00:00:00.0,0.00,00:00:00.0,0.00,23.0,6,7.3,0.0,---,---,---,---,---,---,---,---,---,---,32.77344180,130.75182090
-1,64.2,0.0,00:00:29.1,00:00:00.0,0.00,00:00:00.0,0.00,21.0,7,7.5,0.0,---,---,---,---,---,---,---,---,---,---,32.77344910,130.75172490
-1,65.1,0.0,00:00:31.8,00:13:13.6,0.63,00:00:00.0,0.00,21.5,8,0.9,0.0,---,---,---,---,---,---,---,---,---,---,32.77199830,130.75091070
-1,75.8,0.0,00:00:38.2,00:04:36.2,1.81,00:00:00.0,0.00,32.5,9,10.8,0.0,---,---,---,---,---,---,---,---,---,---,32.77203220,130.75074780
-1,77.9,0.0,00:00:39.2,00:03:31.8,2.36,00:00:00.0,0.00,10.5,10,2.0,0.0,---,---,---,---,---,---,---,---,---,---,32.77203590,130.75072650
 1,84.9,0.0,00:00:42.6,00:04:06.3,2.03,00:00:00.0,0.00,29.0,11,7.1,0.0,---,---,---,---,---,---,---,---,---,---,32.77205340,130.75065400
 1,86.6,0.0,00:00:43.5,00:04:19.0,1.93,00:00:00.0,0.00,27.0,12,1.7,0.0,---,---,---,---,---,---,---,---,---,---,32.77205750,130.75063690
 1,104.5,0.0,00:00:53.3,00:05:01.2,1.66,00:00:00.0,0.00,32.5,13,17.9,0.0,---,---,---,---,---,---,---,---,---,---,32.77211530,130.75043810
