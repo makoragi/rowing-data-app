@@ -68,16 +68,32 @@ const CSVSegmentProcessor = () => {
     const dataHeaderLine = lines[perStrokeIndex + 2] || "";
     const dataUnitsLine  = lines[perStrokeIndex + 3] || "";
 
-    // ④ 新たなデータ行：指定したStrokes範囲を抽出し、ストローク番号を振り直す
+    // ④ 新たなデータ行：指定したStrokes範囲を抽出し、ストローク番号と距離を振り直す
     const headerColumns = dataHeaderLine.split(',').map(h => h.trim());
     const strokeColIndex = headerColumns.indexOf('Total Strokes');
+    const distanceColIndex = headerColumns.indexOf('Distance (GPS)');
+    const dpsColIndex = headerColumns.indexOf('Distance/Stroke (GPS)');
+
+    let baseDistance = 0;
+    if (distanceColIndex !== -1) {
+      const startCols = originalData[startIndex].split(',');
+      const firstDist = parseFloat(startCols[distanceColIndex]) || 0;
+      const firstDps = dpsColIndex !== -1 ? parseFloat(startCols[dpsColIndex]) || 0 : 0;
+      baseDistance = firstDist - firstDps; // 開始ストローク直前の距離
+    }
+
     const newDataRows = originalData.slice(startIndex, endIndex + 1).map((line, idx) => {
-      if (strokeColIndex === -1) return line;
       const cols = line.split(',');
-      // strokeColIndex が範囲外の場合はそのまま返す
-      if (cols.length > strokeColIndex) {
+
+      if (cols.length > strokeColIndex && strokeColIndex !== -1) {
         cols[strokeColIndex] = (idx + 1).toString();
       }
+
+      if (distanceColIndex !== -1 && cols.length > distanceColIndex) {
+        const dist = parseFloat(cols[distanceColIndex]) || 0;
+        cols[distanceColIndex] = (dist - baseDistance).toFixed(1);
+      }
+
       return cols.join(',');
     });
     
