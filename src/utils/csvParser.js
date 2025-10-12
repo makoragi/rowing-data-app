@@ -151,7 +151,7 @@ const parseAndFormatDate = (dateString) => {
 
 export const parseUploadedCSV = (csvContent) => {
   const lines = csvContent.split('\n');
-  
+
   // Parse Start Time
   const startTimeIndex = lines.findIndex(line => line.trim().startsWith('Start Time:'));
   let startTime = null;
@@ -182,27 +182,77 @@ export const parseUploadedCSV = (csvContent) => {
   if (dataStartIndex === -1) {
     throw new Error('Could not find "Per-Stroke Data:" in the CSV file');
   }
-  const headers = lines[dataStartIndex + 2].split(',');
+  const headers = lines[dataStartIndex + 2].split(',').map(header => header.trim());
   const columnIndexes = {
     totalStrokes: headers.indexOf('Total Strokes'),
     distance: headers.indexOf('Distance (GPS)'),
     speed: headers.indexOf('Speed (GPS)'),
     strokeRate: headers.indexOf('Stroke Rate'),
-    distancePerStroke: headers.indexOf(`Distance/Stroke (GPS)`),
-    elapsedTime: headers.indexOf('Elapsed Time')
+    distancePerStroke: headers.indexOf('Distance/Stroke (GPS)'),
+    elapsedTime: headers.indexOf('Elapsed Time'),
+    gpsLat: headers.indexOf('GPS Lat.'),
+    gpsLon: headers.indexOf('GPS Lon.')
   };
 
-  const parsedData = lines.slice(dataStartIndex + 4).map(line => {
-    const values = line.split(',');
-    return {
-      stroke: parseInt(values[columnIndexes.totalStrokes]) || 0,
-      distance: parseFloat(values[columnIndexes.distance]) || 0,
-      speed: parseFloat(values[columnIndexes.speed]) || 0,
-      strokeRate: parseFloat(values[columnIndexes.strokeRate]) || 0,
-      distancePerStroke: parseFloat(values[columnIndexes.distancePerStroke]) || 0,
-      elapsedTime: values[columnIndexes.elapsedTime] ? values[columnIndexes.elapsedTime].trim() : ''
-    };
-  }).filter(item => item.stroke !== 0 && item.distance !== 0 && item.speed !== 0);
+  const dataLines = lines
+    .slice(dataStartIndex + 4)
+    .filter(line => line && line.trim() !== '');
 
-  return { parsedData, summary, startTime };
+  const hasGPSColumns = columnIndexes.gpsLat !== -1 && columnIndexes.gpsLon !== -1;
+
+  const parsedData = dataLines
+    .map(line => {
+      const values = line.split(',').map(value => value.trim());
+      if (values.length < headers.length) {
+        return null;
+      }
+      const gpsLat = hasGPSColumns ? parseFloat(values[columnIndexes.gpsLat]) : null;
+      const gpsLon = hasGPSColumns ? parseFloat(values[columnIndexes.gpsLon]) : null;
+      return {
+        stroke: parseInt(values[columnIndexes.totalStrokes], 10) || 0,
+        distance: parseFloat(values[columnIndexes.distance]) || 0,
+        speed: parseFloat(values[columnIndexes.speed]) || 0,
+        strokeRate: parseFloat(values[columnIndexes.strokeRate]) || 0,
+        distancePerStroke: parseFloat(values[columnIndexes.distancePerStroke]) || 0,
+        elapsedTime: values[columnIndexes.elapsedTime] ? values[columnIndexes.elapsedTime].trim() : '',
+        gpsLat: Number.isFinite(gpsLat) ? gpsLat : null,
+        gpsLon: Number.isFinite(gpsLon) ? gpsLon : null
+      };
+    })
+    .filter(Boolean);
+
+  let segments = [];
+  if (hasGPSColumns) {
+    const gpsData = parsedData.filter(point => Number.isFinite(point.gpsLat) && Number.isFinite(point.gpsLon));
+    if (gpsData.length > 0) {
+      let currentSegment = [];
+      let currentSegmentDistance = 0;
+      let previousDistance = 0;
+
+      gpsData.forEach((dataPoint) => {
+        if (!Number.isFinite(dataPoint.distance)) {
+          return;
+        }
+
+        currentSegment.push(dataPoint);
+
+        const distanceIncrement = dataPoint.distance - previousDistance;
+        currentSegmentDistance += distanceIncrement;
+
+        previousDistance = dataPoint.distance;
+
+        if (currentSegmentDistance >= 1000) {
+          segments.push(currentSegment);
+          currentSegment = [];
+          currentSegmentDistance = 0;
+        }
+      });
+
+      if (currentSegment.length > 0) {
+        segments.push(currentSegment);
+      }
+    }
+  }
+
+  return { parsedData, summary, startTime, segments };
 };
