@@ -8,7 +8,7 @@ import LandingPage from './components/LandingPage';
 
 const WAKANA_CONFIG = {
   title: 'WAKANA SC',
-  filesSource: 'available_files.json',
+  filesSource: 'available_files_wakana.json',
 };
 
 function App() {

@@ -11,7 +11,7 @@ import MapView from './MapView';
 
 const DEFAULT_CONFIG = {
   title: 'WAKANA SC',
-  filesSource: 'available_files.json',
+  filesSource: 'available_files_wakana.json',
 };
 
 const RowingDataVisualization = ({ dataConfig }) => {
