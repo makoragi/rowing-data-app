@@ -11,6 +11,11 @@ const WAKANA_CONFIG = {
   filesSource: 'available_files_wakana.json',
 };
 
+const SUZUKA_CONFIG = {
+  title: 'SUZUKA SC',
+  filesSource: 'available_files_suzuka.json',
+};
+
 function App() {
   const [currentScreen, setCurrentScreen] = useState('home');
   const [dataConfig, setDataConfig] = useState(WAKANA_CONFIG);
@@ -24,6 +29,11 @@ function App() {
     setCurrentScreen('rowing');
   };
 
+  const showSuzuka = () => {
+    setDataConfig(SUZUKA_CONFIG);
+    setCurrentScreen('rowing');
+  };
+
   const handleSelectScreen = (screen) => {
     switch (screen) {
       case 'home':
@@ -31,6 +41,9 @@ function App() {
         break;
       case 'wakana':
         showWakana();
+        break;
+      case 'suzuka':
+        showSuzuka();
         break;
       case 'upload':
       case 'processing':
@@ -48,7 +61,9 @@ function App() {
         <HamburgerMenu onSelectScreen={handleSelectScreen} />
       </header>
       <main>
-        {currentScreen === 'home' && <LandingPage onSelectWakana={showWakana} />}
+        {currentScreen === 'home' && (
+          <LandingPage onSelectWakana={showWakana} onSelectSuzuka={showSuzuka} />
+        )}
         {currentScreen === 'rowing' && (
           <RowingDataVisualization dataConfig={dataConfig} />
         )}

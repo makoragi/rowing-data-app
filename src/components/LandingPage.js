@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LandingPage = ({ onSelectWakana }) => {
+const LandingPage = ({ onSelectWakana, onSelectSuzuka }) => {
   return (
     <section className="landing-page">
       <h2 className="landing-title">データセットを選択してください</h2>
@@ -11,8 +11,8 @@ const LandingPage = ({ onSelectWakana }) => {
         <button className="landing-link" onClick={onSelectWakana}>
           WAKANA SC
         </button>
-        <button className="landing-link disabled" disabled>
-          Others（準備中）
+        <button className="landing-link" onClick={onSelectSuzuka}>
+          SUZUKA SC
         </button>
       </div>
     </section>
