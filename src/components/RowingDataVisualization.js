@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { fetchAvailableFiles, fetchCSVData } from '../utils/dataFetching';
+import { getFileKey } from '../utils/fileInfo';
 import { parseCSV } from '../utils/csvParser';
 import CalendarSelector from './CalendarSelector';
 import FileSelector from './FileSelector';
@@ -8,11 +9,17 @@ import DataChart from './DataChart';
 import SessionInfo from './SessionInfo';
 import MapView from './MapView';
 
-const RowingDataVisualization = () => {
+const DEFAULT_CONFIG = {
+  title: 'WAKANA SC',
+  filesSource: 'available_files.json',
+};
+
+const RowingDataVisualization = ({ dataConfig }) => {
+  const { title, filesSource } = { ...DEFAULT_CONFIG, ...dataConfig };
   const [data, setData] = useState([]);
   const [segments, setSegments] = useState([]);
   const [highlightRange, setHighlightRange] = useState(null);
-  const [selectedFile, setSelectedFile] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
   const [availableFiles, setAvailableFiles] = useState([]);
   const [selectedGraph, setSelectedGraph] = useState('distance-speed');
   const [sessionSummary, setSessionSummary] = useState(null);
@@ -21,11 +28,21 @@ const RowingDataVisualization = () => {
   const [loading, setLoading] = useState(true);
   const [useCalendar, setUseCalendar] = useState(false);
 
-  const fetchData = useCallback(async (fileName) => {
+  useEffect(() => {
+    setAvailableFiles([]);
+    setSelectedFile(null);
+    setData([]);
+    setSegments([]);
+    setSessionSummary(null);
+    setStartTime(null);
+    setLoading(true);
+  }, [filesSource]);
+
+  const fetchData = useCallback(async (fileInfo) => {
     setLoading(true);
     setError(null);
     try {
-      const csvText = await fetchCSVData(fileName);
+      const csvText = await fetchCSVData(fileInfo);
       const { parsedData, segments, summary, startTime } = parseCSV(csvText);
       // console.log('Parsed segments:', segments); // デバッグログ
       setData(parsedData);
@@ -42,16 +59,19 @@ const RowingDataVisualization = () => {
 
   useEffect(() => {
     const initializeData = async () => {
-      await fetchAvailableFiles(setAvailableFiles, setError);
+      setError(null);
+      await fetchAvailableFiles(filesSource, setAvailableFiles, setError);
     };
 
     initializeData();
-  }, []);
+  }, [filesSource]);
 
   useEffect(() => {
-    if (availableFiles.length > 0 && !selectedFile) {
+    if (availableFiles.length > 0) {
       const latestFile = availableFiles[availableFiles.length - 1];
-      setSelectedFile(latestFile);
+      if (!selectedFile || getFileKey(selectedFile) !== getFileKey(latestFile)) {
+        setSelectedFile(latestFile);
+      }
     }
   }, [availableFiles, selectedFile]);
 
@@ -71,7 +91,7 @@ const RowingDataVisualization = () => {
 
   return (
     <div className="rowing-data-container">
-      <h2 className="wakana-sc-title">WAKANA SC</h2>
+      <h2 className="wakana-sc-title">{title}</h2>
       <div className="selector-toggle">
         <button onClick={toggleSelector}>
           {useCalendar ? 'リスト表示に切り替え' : 'カレンダー表示に切り替え'}

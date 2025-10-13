@@ -20,7 +20,8 @@ const HamburgerMenu = ({ onSelectScreen }) => {
         <span></span>
       </button>
       <nav className={`side-menu ${isOpen ? 'open' : ''}`}>
-        <button onClick={() => handleSelectScreen('built-in')}>WAKANA SC</button>
+        <button onClick={() => handleSelectScreen('home')}>ホーム</button>
+        <button onClick={() => handleSelectScreen('wakana')}>WAKANA SC</button>
         <button onClick={() => handleSelectScreen('upload')}>アップロードデータ表示</button>
         <button onClick={() => handleSelectScreen('processing')}>データ加工</button>
       </nav>
