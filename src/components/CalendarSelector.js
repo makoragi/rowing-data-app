@@ -2,12 +2,16 @@ import React, { useState, useMemo, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { format, parseISO } from 'date-fns';
+import { getFileKey, getFileName } from '../utils/fileInfo';
 
 const CalendarSelector = ({ availableFiles, onFileSelect, selectedFile }) => {
   const filesByDate = useMemo(() => {
     const filesMap = {};
-    availableFiles.forEach(file => {
-      const date = file.split('_')[0];
+    availableFiles.forEach((file) => {
+      const name = getFileName(file);
+      if (!name) return;
+      const date = name.split('_')[0];
+      if (!date) return;
       if (!filesMap[date]) filesMap[date] = [];
       filesMap[date].push(file);
     });
@@ -28,8 +32,14 @@ const CalendarSelector = ({ availableFiles, onFileSelect, selectedFile }) => {
   useEffect(() => {
     const dateString = format(selectedDate, 'yyyy-MM-dd');
     const filesForDate = filesByDate[dateString] || [];
-    if (filesForDate.length > 0 && (!selectedFile || !filesForDate.includes(selectedFile))) {
-      onFileSelect(filesForDate[0]);
+    if (filesForDate.length > 0) {
+      const selectedKey = getFileKey(selectedFile);
+      const hasSelection = filesForDate.some(
+        (file) => getFileKey(file) === selectedKey
+      );
+      if (!hasSelection) {
+        onFileSelect(filesForDate[0]);
+      }
     }
   }, [selectedDate, filesByDate, selectedFile, onFileSelect]);
 
@@ -55,6 +65,7 @@ const CalendarSelector = ({ availableFiles, onFileSelect, selectedFile }) => {
   };
 
   const filesForSelectedDate = filesByDate[format(selectedDate, 'yyyy-MM-dd')] || [];
+  const selectedKey = getFileKey(selectedFile);
 
   return (
     <div className="calendar-selector">
@@ -69,16 +80,22 @@ const CalendarSelector = ({ availableFiles, onFileSelect, selectedFile }) => {
         <h3>{format(selectedDate, 'yyyy年MM月dd日')}</h3>
         {filesForSelectedDate.length > 0 ? (
           <ul>
-            {filesForSelectedDate.map(file => (
-              <li key={file}>
-                <button
-                  onClick={() => onFileSelect(file)}
-                  className={selectedFile === file ? 'selected' : ''}
-                >
-                  {file.split('_')[1].replace('.csv', '')}
-                </button>
-              </li>
-            ))}
+            {filesForSelectedDate.map((file) => {
+              const key = getFileKey(file);
+              const name = getFileName(file);
+              const labelPart = name.split('_')[1] || name;
+              const label = labelPart.replace('.csv', '');
+              return (
+                <li key={key}>
+                  <button
+                    onClick={() => onFileSelect(file)}
+                    className={selectedKey === key ? 'selected' : ''}
+                  >
+                    {label}
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         ) : (
           <p>この日のファイルはありません。</p>

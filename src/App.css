@@ -38,6 +38,55 @@ main {
   box-sizing: border-box;
 }
 
+.landing-page {
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.landing-title {
+  font-size: 1.75rem;
+  margin-bottom: 0.75rem;
+  color: #2c5282;
+}
+
+.landing-description {
+  color: #4a5568;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+.landing-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.landing-link {
+  min-width: 200px;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  color: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.landing-link:hover:not(.disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(49, 130, 206, 0.3);
+}
+
+.landing-link.disabled {
+  background: #cbd5f5;
+  color: #2d3748;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
 .wakana-sc-title {
   font-size: 1.5rem;
   color: #333;

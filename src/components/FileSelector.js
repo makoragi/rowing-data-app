@@ -1,7 +1,11 @@
-import React from "react";
+import React from 'react';
+import { getFileDisplayName, getFileKey } from '../utils/fileInfo';
 
 const FileSelector = ({ availableFiles, onFileSelect, selectedFile }) => {
-  const currentIndex = availableFiles.indexOf(selectedFile);
+  const selectedKey = getFileKey(selectedFile);
+  const currentIndex = availableFiles.findIndex(
+    (file) => getFileKey(file) === selectedKey
+  );
 
   const handlePrev = () => {
     if (currentIndex > 0) {
@@ -25,16 +29,24 @@ const FileSelector = ({ availableFiles, onFileSelect, selectedFile }) => {
         &lt;
       </button>
       <select
-        value={selectedFile}
-        onChange={(e) => onFileSelect(e.target.value)}
+        value={selectedKey}
+        onChange={(e) => {
+          const file = availableFiles.find(
+            (item) => getFileKey(item) === e.target.value
+          );
+          onFileSelect(file || null);
+        }}
         className="file-select"
       >
         <option value="">ファイルを選択してください</option>
-        {availableFiles.map((file) => (
-          <option key={file} value={file}>
-            {file}
-          </option>
-        ))}
+        {availableFiles.map((file) => {
+          const key = getFileKey(file);
+          return (
+            <option key={key} value={key}>
+              {getFileDisplayName(file)}
+            </option>
+          );
+        })}
       </select>
       <button
         className="file-nav-btn"
