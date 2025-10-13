@@ -67,11 +67,24 @@ const RowingDataVisualization = ({ dataConfig }) => {
   }, [filesSource]);
 
   useEffect(() => {
-    if (availableFiles.length > 0) {
-      const latestFile = availableFiles[availableFiles.length - 1];
-      if (!selectedFile || getFileKey(selectedFile) !== getFileKey(latestFile)) {
-        setSelectedFile(latestFile);
-      }
+    if (availableFiles.length === 0) {
+      return;
+    }
+
+    const latestFile = availableFiles[availableFiles.length - 1];
+
+    if (!selectedFile) {
+      setSelectedFile(latestFile);
+      return;
+    }
+
+    const selectedKey = getFileKey(selectedFile);
+    const hasSelectedFile = availableFiles.some(
+      (file) => getFileKey(file) === selectedKey
+    );
+
+    if (!hasSelectedFile) {
+      setSelectedFile(latestFile);
     }
   }, [availableFiles, selectedFile]);
 
